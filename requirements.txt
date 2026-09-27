@@ -157,3 +157,4 @@ xlwt
 yahoo-finance
 yarl
 zope.interface
+whitenoise

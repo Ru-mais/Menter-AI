@@ -10,7 +10,7 @@ except admin.sites.NotRegistered:
 
 @admin.register(Userinfo)
 class UserinfoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'phone', 'password', 'date_joined', 'membership_type', 'attempt', 'is_active', 'view_search_history', 'edit_action')
+    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'phone', 'password', 'date_joined', 'membership_type', 'attempt', 'credits', 'is_active', 'view_search_history', 'edit_action')
     search_fields = ('username', 'email', 'phone')
     ordering = ('-date_joined',)
     
@@ -30,7 +30,7 @@ class UserinfoAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'email', 'phone')}),
-        ('Membership', {'fields': ('membership_type', 'attempt')}),
+        ('Membership & Usage', {'fields': ('membership_type', 'attempt', 'credits')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
         ('Search History', {'fields': ('formatted_search_history',)}),
@@ -133,3 +133,23 @@ try:
 except admin.sites.NotRegistered:
     pass
 
+from .models import ChatSession, ChatMessage, APIUsage
+
+class ChatMessageInline(admin.TabularInline):
+    model = ChatMessage
+    extra = 0
+    readonly_fields = ('role', 'content', 'timestamp')
+
+@admin.register(ChatSession)
+class ChatSessionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'title', 'created_at', 'updated_at')
+    search_fields = ('user__username', 'title')
+    inlines = [ChatMessageInline]
+    readonly_fields = ('created_at', 'updated_at')
+
+@admin.register(APIUsage)
+class APIUsageAdmin(admin.ModelAdmin):
+    list_display = ('user', 'endpoint', 'success', 'cost', 'timestamp')
+    list_filter = ('endpoint', 'success', 'timestamp')
+    search_fields = ('user__username',)
+    readonly_fields = ('timestamp',)

@@ -347,11 +347,12 @@ def search(request):
         context['first_name'] = "Guest"
 
     if user:
-        attempts = user.attempt if user.attempt is not None else 3
+        credits = user.credits
     else:
-        attempts = 1
+        credits = 0
     
-    context['remaining_prompts'] = attempts
+    context['remaining_prompts'] = credits
+    context['remaining_credits'] = credits
 
     # default language
     language = 'en'
@@ -365,27 +366,14 @@ def search(request):
             context['error'] = 'Please provide a valid prompt.'
             return render(request, 'search.html', context)
 
-        # Determine user's plan and attempts safely
+        # Determine user's credits
         if user:
-            plan = (user.membership_type or "").strip().lower()
-            attempts = user.attempt or 3
+            credits = user.credits
         else:
-            plan = ""
-            attempts = 1
+            credits = 0
 
-        # Normalize plan checks (lowercase)
-        if plan == "basic" or plan == "NULL":
-            max_prompts = 5
-        elif plan == "pro":
-            max_prompts = 10
-        elif plan == "premium":
-            max_prompts = 100
-        else:
-            # default for unknown/anonymous users
-            max_prompts = 3
-
-        # If user has attempts left (safe check)
-        if attempts > 0:
+        # If user has enough credits (1 for text, 5 for avatar)
+        if credits >= 6:
             language_name = LANGUAGE_MAP.get(language, 'English')
             if language != 'en':
                 full_prompt = f"Explain about '{prompt}' completely in {language_name}."
@@ -419,9 +407,27 @@ def search(request):
             if audio_file:
                 avatar_video_url = create_talking_avatar(os.path.join("static", "images", "images.jpeg"), audio_file)
 
-            # decrease attempts and save if we have a user object
+            # Log text API usage
             if user:
-                user.attempt = max(attempts - 1, 0)
+                from user_app.models import APIUsage, ChatSession, ChatMessage
+                APIUsage.objects.create(
+                    user=user,
+                    endpoint='groq_chat',
+                    success=True,
+                    cost=1.0
+                )
+                
+                if avatar_video_url:
+                    APIUsage.objects.create(
+                        user=user,
+                        endpoint='did_avatar',
+                        success=True,
+                        cost=5.0
+                    )
+            
+            # decrease credits and save if we have a user object
+            if user:
+                user.credits = max(credits - 6, 0)
                 
                 # Save to history
                 history_entry = {
@@ -434,9 +440,6 @@ def search(request):
                 # Initialize list if None
                 if not user.recent_searches:
                     user.recent_searches = []
-                
-                # If it was a list of strings (legacy), convert or just append new dict
-                # We'll just append to the list.
                 
                 # Add to beginning
                 if isinstance(user.recent_searches, list):
@@ -451,17 +454,28 @@ def search(request):
                         prompt=prompt,
                         answer=generated_text
                     )
+                    
+                    # Create ChatSession and ChatMessage as requested
+                    session, created = ChatSession.objects.get_or_create(
+                        user=user,
+                        title=prompt[:50] + "..."
+                    )
+                    ChatMessage.objects.create(session=session, role='user', content=prompt)
+                    ChatMessage.objects.create(session=session, role='ai', content=generated_text)
+                    
                 except Exception as e:
-                    logger.exception("Failed to save user attempts/history: %s", e)
+                    logger.exception("Failed to save user credits/history: %s", e)
 
-            context['remaining_prompts'] = user.attempt if user else 0
+            context['remaining_prompts'] = user.credits if user else 0
+            context['remaining_credits'] = user.credits if user else 0
             context['explanation'] = generated_text
             context['audio_url'] = f"/{audio_file}" if audio_file else None
             context['avatar_video_url'] = avatar_video_url
             context['topic'] = prompt
         else:
-            logger.warning("User has no attempts left.")
-            context['error'] = "You have run out of prompts. Please upgrade your plan."
-            context['remaining_prompts'] = 0
+            logger.warning("User has not enough credits left.")
+            context['error'] = "You do not have enough credits (6 required). Please upgrade your plan."
+            context['remaining_prompts'] = credits
+            context['remaining_credits'] = credits
 
     return render(request, 'search.html', context)

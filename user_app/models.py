@@ -7,12 +7,18 @@ PLAN_ATTEMPTS = {
     "pro": 10,   
     "premium": 50  
 }
+PLAN_CREDITS = {
+    "basic": 100, 
+    "pro": 300,   
+    "premium": 1000  
+}
 class Userinfo(AbstractUser):
     phone = models.CharField(max_length=20, unique=True, null=True, blank=True)
     password = models.CharField(max_length=255, null=True, blank=True) 
     email = models.EmailField(max_length=50, unique=True, null=True, blank=True)
     recent_searches = models.JSONField(null=True, blank=True, help_text="Stores recent searches for AI suggestions.")
     attempt = models.IntegerField(null=True, blank=True)
+    credits = models.IntegerField(default=0, help_text="User credits for AI usage (1 credit = 1 message, 5 credits = 1 avatar)")
     username = models.CharField(max_length=40, unique=True, null=True, blank=True)
 
     membership_type = models.CharField(
@@ -90,6 +96,7 @@ class Payment(models.Model):
             if plan_type in PLAN_ATTEMPTS:
                 self.user.membership_type = plan_type
                 self.user.attempt = PLAN_ATTEMPTS[plan_type]
+                self.user.credits += PLAN_CREDITS.get(plan_type, 0)
                 self.user.save()
 
 
@@ -159,3 +166,43 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} - {self.email}"
+
+
+class ChatSession(models.Model):
+    user = models.ForeignKey('Userinfo', on_delete=models.CASCADE, related_name='chat_sessions')
+    title = models.CharField(max_length=255, default="New Conversation")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.title}"
+
+
+class ChatMessage(models.Model):
+    ROLE_CHOICES = [
+        ('user', 'User'),
+        ('ai', 'AI Mentor'),
+    ]
+    session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='messages')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.role}: {self.content[:30]}"
+
+
+class APIUsage(models.Model):
+    ENDPOINT_CHOICES = [
+        ('groq_chat', 'Groq Chat Completion'),
+        ('did_avatar', 'D-ID Avatar Generation'),
+        ('openai', 'OpenAI Fallback'),
+    ]
+    user = models.ForeignKey('Userinfo', on_delete=models.SET_NULL, null=True, blank=True)
+    endpoint = models.CharField(max_length=50, choices=ENDPOINT_CHOICES)
+    success = models.BooleanField(default=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=4, default=0.0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.endpoint} - {'Success' if self.success else 'Failed'} at {self.timestamp}"

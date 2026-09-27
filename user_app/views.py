@@ -173,7 +173,9 @@ def feedback(request):
 
 @login_required(login_url='user_app:login')
 def history(request):
-    return render(request, "history.html", {"user": request.user})
+    from .models import ChatSession
+    sessions = ChatSession.objects.filter(user=request.user).order_by('-updated_at')
+    return render(request, "history.html", {"user": request.user, "sessions": sessions})
 
 
 @login_required(login_url='user_app:login')
