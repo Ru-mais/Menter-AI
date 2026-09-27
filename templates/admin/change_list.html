@@ -1,0 +1,218 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static " admin/css/changelists.css" %}">
+{% if cl.formset %}
+<link rel="stylesheet" href="{% static " admin/css/forms.css" %}">
+{% endif %}
+{% if cl.formset or action_form %}
+<script src="{% url 'admin:jsi18n' %}"></script>
+{% endif %}
+{{ media.css }}
+<style>
+    #changelist {
+        border: none;
+        box-shadow: none;
+    }
+
+    #changelist-form {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow-x: auto;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .results {
+        background-color: transparent;
+    }
+
+    /* Actions */
+    .actions {
+        background: var(--secondary-bg);
+        padding: 15px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .actions label {
+        margin: 0;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+
+    .actions select {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background: var(--primary-bg);
+        color: var(--text-main);
+    }
+
+    .button.action-btn {
+        margin: 0;
+    }
+
+    /* Search / Filter */
+    #toolbar {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    #toolbar form {
+        display: flex;
+        align-items: center;
+    }
+
+    #toolbar label {
+        display: none;
+    }
+
+    #searchbar {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px 15px;
+        border-radius: 6px;
+        background: var(--primary-bg);
+        color: var(--text-main);
+        border: 1px solid var(--border-color);
+    }
+
+    #changelist-filter {
+        position: static;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-left: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    #changelist-filter h2 {
+        background: var(--accent-color);
+        color: #000;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+    }
+
+    /* Buttons */
+    .object-tools {
+        margin-bottom: 20px;
+        float: none;
+        display: flex;
+        gap: 10px;
+        font-family: inherit;
+    }
+
+    .object-tools a.addlink {
+        background: var(--accent-color);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .object-tools a.addlink:hover {
+        background: #b5952f;
+        transform: translateY(-2px);
+    }
+
+    /* Pagination */
+    .paginator {
+        border-top: 1px solid var(--border-color);
+        background: var(--secondary-bg);
+        padding: 15px;
+        color: var(--text-muted);
+    }
+
+    .paginator a {
+        color: var(--accent-color);
+        padding: 5px 10px;
+        border-radius: 4px;
+        background: rgba(212, 175, 55, 0.1);
+        margin: 0 2px;
+    }
+
+    .paginator a:hover {
+        background: var(--accent-color);
+        color: #000;
+    }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media.js }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+{% block coltype %}{% if cl.has_filters %}flex-col{% else %}flex-col{% endif %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    {% block object-tools %}
+    <ul class="object-tools">
+        {% block object-tools-items %}
+        {% change_list_object_tools %}
+        {% endblock %}
+    </ul>
+    {% endblock %}
+
+    {% if cl.formset and cl.formset.errors %}
+    <p class="errornote">
+        {% if cl.formset.total_error_count == 1 %}{% translate "Please correct the error below." %}{% else %}{%
+        translate "Please correct the errors below." %}{% endif %}
+    </p>
+    {{ cl.formset.non_form_errors }}
+    {% endif %}
+
+    <div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
+        <div class="changelist-content" style="display: flex; flex-wrap: wrap;">
+            <div style="flex: 1; padding-right: 20px;">
+                {% block search %}{% search_form cl %}{% endblock %}
+                {% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}
+
+                <form id="changelist-form" method="post" {% if cl.formset and cl.formset.is_multipart %}
+                    enctype="multipart/form-data" {% endif %} novalidate>{% csrf_token %}
+                    {% if cl.formset %}
+                    <div>{{ cl.formset.management_form }}</div>
+                    {% endif %}
+
+                    {% block result_list %}
+                    {% if action_form and actions_on_top and cl.show_admin_actions %}{% admin_actions %}{% endif %}
+                    {% result_list cl %}
+                    {% if action_form and actions_on_bottom and cl.show_admin_actions %}{% admin_actions %}{% endif %}
+                    {% endblock %}
+                    {% block pagination %}{% pagination cl %}{% endblock %}
+                </form>
+            </div>
+
+            {% block filters %}
+            {% if cl.has_filters %}
+            <div id="changelist-filter">
+                <h2>{% translate 'Filter' %}</h2>
+                {% if cl.has_active_filters %}<h3 id="changelist-filter-clear">
+                    <a href="{{ cl.clear_all_filters_qs }}">&#10006; {% translate "Clear all filters" %}</a>
+                </h3>{% endif %}
+                {% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}
+            </div>
+            {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

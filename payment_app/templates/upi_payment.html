@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}UPI Payment{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <h3>UPI Payment</h3>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="upi_id" class="form-control mb-3" placeholder="Enter UPI ID" required>
+        <input type="text" name="amount" class="form-control mb-3" placeholder="Enter Amount" required>
+        <button class="btn btn-success" type="submit">Pay Now</button>
+    </form>
+</div>
+{% endblock %}

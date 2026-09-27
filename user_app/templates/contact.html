@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us | Get in Touch{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <h1>Contact Us</h1>
+    <p>We’d love to hear from you! Reach out to us with any questions, feedback, or inquiries. Our team is here to
+        assist you.</p>
+
+    <div class="contact-form">
+        <form action="{% url 'user_app:contact' %}" method="POST" id="contactForm">
+            {% csrf_token %}
+            <input type="text" name="name" id="name" placeholder="Your Name" required>
+            <input type="email" name="email" id="email" placeholder="Your Email" required>
+            <textarea name="message" id="message" rows="5" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function (event) {
+            var name = document.getElementById('name').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var message = document.getElementById('message').value.trim();
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (name === "" || email === "" || message === "") {
+                alert("Please fill out all fields.");
+                event.preventDefault();
+                return;
+            }
+
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address.");
+                event.preventDefault();
+                return;
+            }
+
+            // If validation passes, the form will submit normally to the backend
+        });
+    </script>
+
+    <div class="contact-info">
+        <h2>Our Contact Details</h2>
+        <p>📍 Address: Kannur,Kerala</p>
+        <p>📧 Email: support@virtuementor.com</p>
+        <p>📞 Phone: +91 6238323052</p>
+    </div>
+
+    <div class="social-media">
+        <h2>Follow Us</h2>
+        <p>Stay connected with us on social media for updates and news:</p>
+        <div class="social-icons">
+            <a href="#" class="me-2 text-dark"><i class="ri-facebook-box-fill"></i></a>
+            <a href="#" class="me-2 text-dark"><i class="ri-instagram-line"></i></a>
+            <a href="#" class="me-2 text-dark"><i class="ri-twitter-fill"></i></a>
+            <a href="#" class="me-2 text-dark"><i class="ri-linkedin-box-fill"></i></a>
+        </div>
+    </div>
+
+    <!-- <div class="map">
+        <h2>Find Us on the Map</h2>
+        <iframe src="https://maps.google.com/maps?q=123%20Virtue%20Mentor%20Street,%20Tech%20City,%20TX&output=embed"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div> -->
+</div>
+
+<style>
+    .contact-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 50px;
+        text-align: center;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        font-weight: 700;
+        color: var(--brand-color);
+    }
+
+    p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        color: var(--text-muted);
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--primary-bg);
+        color: var(--text-main);
+        transition: border-color 0.3s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        border-color: var(--accent-color);
+        outline: none;
+    }
+
+    .contact-form button {
+        width: 100%;
+        padding: 14px;
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .contact-form button:hover {
+        background: var(--brand-color);
+        transform: translateY(-2px);
+    }
+
+    .contact-info {
+        margin-top: 40px;
+        text-align: left;
+        color: var(--text-main);
+    }
+
+    .social-media {
+        margin-top: 40px;
+    }
+
+    .social-media h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: var(--text-main);
+    }
+
+    .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .social-icons a {
+        font-size: 1.5rem;
+        color: var(--text-muted) !important;
+        transition: color 0.3s;
+    }
+
+    .social-icons a:hover {
+        color: var(--accent-color) !important;
+    }
+
+    .map {
+        margin-top: 40px;
+    }
+
+    .map iframe {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+</style>
+
+{% endblock %}

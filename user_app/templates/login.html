@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Virtue Mentor AI - Login{% endblock %}
+{% block content %}
+
+<style>
+    .login-input {
+        background-color: var(--input-bg, #f8f9fa);
+        border: 1px solid transparent;
+        color: var(--text-main);
+        transition: all 0.3s ease;
+    }
+
+    .login-input:focus {
+        background-color: var(--input-bg, #fff);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        color: var(--text-main);
+    }
+
+    .login-left-panel {
+        background-color: var(--card-bg);
+    }
+
+    [data-theme="dark"] .login-input {
+        --input-bg: rgba(255, 255, 255, 0.05);
+        color: #fff;
+    }
+
+    [data-theme="dark"] .login-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Input Icon Styling */
+    .input-icon {
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+    }
+
+    .position-relative:focus-within .input-icon {
+        color: var(--accent-color) !important;
+    }
+
+    /* Video Side Styling */
+    .video-side {
+        background: linear-gradient(135deg, var(--brand-color), #047857);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .video-side::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("{% static 'images/pattern.svg' %}") opacity(0.1);
+        pointer-events: none;
+    }
+
+    [data-theme="dark"] .video-side {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        /* Deep Slate/Navy to Navy */
+    }
+</style>
+
+<div class="row align-items-center justify-content-center min-vh-100 px-4">
+    <div class="col-lg-10">
+        <div class="card shadow-lg border-0 overflow-hidden rounded-4">
+            <div class="row g-0">
+                <!-- Left Side - Login Form -->
+                <div
+                    class="col-md-6 p-5 d-flex flex-column align-items-center justify-content-center text-center login-left-panel">
+                    <h2 class="fw-bold mb-2" style="color: var(--text-main);">Welcome Back</h2>
+                    <p class="mb-4" style="color: var(--text-muted);">Log in to VirtuMentor AI</p>
+
+                    <form method="POST" action="{% url 'user_app:login' %}" class="w-100">
+                        {% csrf_token %}
+                        <!-- Email Input -->
+                        <div class="position-relative mb-3">
+                            <i class="position-absolute input-icon ri-mail-line"></i>
+                            <input type="email" name="email" id="email" placeholder="Enter your email" required
+                                class="form-control ps-5 py-3 rounded-pill login-input border-0">
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="position-relative mb-3">
+                            <i class="position-absolute input-icon ri-lock-line"></i>
+                            <input type="password" name="password" id="password" placeholder="Enter your password"
+                                required class="form-control ps-5 py-3 rounded-pill login-input border-0">
+                        </div>
+
+                        <!-- Login Button -->
+                        <button type="submit"
+                            class="btn btn-premium w-100 py-3 rounded-pill fw-bold shadow-sm hover-elevate">
+                            Login
+                        </button>
+                    </form>
+
+                    <!-- Register Link -->
+                    <p class="mt-4" style="color: var(--text-muted);">
+                        New user?
+                        <a href="{% url 'user_app:register' %}" class="fw-bold text-decoration-none hover-underline"
+                            style="color: var(--accent-color);">
+                            Register here
+                        </a>
+                    </p>
+                </div>
+
+                <!-- Right Side - Video Content -->
+                <div
+                    class="col-md-6 d-none d-md-flex align-items-center justify-content-center text-white p-4 video-side">
+                    <div class="text-center w-100 position-relative" style="z-index: 2;">
+                        <h2 class="fw-bold mb-4">Watch & Learn More</h2>
+                        <div class="rounded-4 overflow-hidden shadow-lg mx-auto"
+                            style="max-width: 320px; border: 4px solid rgba(255,255,255,0.2);">
+                            <video class="w-100 h-max" autoplay loop muted playsinline>
+                                <source src="{% static 'images/login-main.mp4' %}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

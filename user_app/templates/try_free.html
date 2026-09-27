@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Try for Free | AI-Powered Learning{% endblock %}
+
+{% block content %}
+<div class="try-free-container">
+    <h1>Start Your Free Trial Today!</h1>
+    <p>Experience AI-driven learning for free. No credit card required. Discover how Virtue Mentor AI can transform your
+        learning experience with personalized content, voice-based explanations, and more.</p>
+
+    <div class="trial-benefits">
+        <div class="benefit-item">✔ 7-Day Free Access to AI Learning Tools</div>
+        <div class="benefit-item">✔ No Watermarks on Basic AI Features</div>
+        <div class="benefit-item">✔ Standard Email Support</div>
+        <div class="benefit-item">✔ Explore AI Voice & Avatar Features</div>
+        <div class="benefit-item">✔ Upgrade Anytime to Premium for Enhanced Features</div>
+    </div>
+
+    <h3>Why Choose Virtue Mentor AI?</h3>
+    <p>With AI-powered tools, personalized learning plans, and cutting-edge features, we make mastering new skills
+        easier and more engaging than ever. Whether you are a student aiming for better exam preparation, a professional
+        seeking to upskill, or anyone with a thirst for knowledge, Virtue Mentor AI is here to help you succeed.</p>
+
+    <h4>Get Access to:</h4>
+    <ul>
+        <li><strong>Interactive Learning Modules:</strong> Learn with gamified features and real-time feedback.</li>
+        <li><strong>Personalized Learning Path:</strong> AI adapts content to your learning speed and preferences.</li>
+        <li><strong>AI Voice & Avatar Assistance:</strong> Engage with voice-based explanations and dynamic avatars.
+        </li>
+        <li><strong>Detailed Analytics:</strong> Track your progress and adjust learning strategies with data insights.
+        </li>
+    </ul>
+
+    <p>No hidden fees, no obligations. Simply start your trial and begin your learning journey with Virtue Mentor AI.
+    </p>
+
+    <a href="{% url 'user_app:register' %}">
+        <button class="try-btn">Start Free Trial</button>
+    </a>
+
+    <div class="trial-cta">
+        <p>Already have an account? <a href="{% url 'user_app:login' %}">Log in here</a> to continue your learning.</p>
+    </div>
+</div>
+
+<style>
+    .try-free-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 50px;
+        text-align: center;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    h1 {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+        color: var(--brand-color);
+    }
+
+    p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    .trial-benefits {
+        text-align: left;
+        margin: 30px auto;
+        max-width: 650px;
+    }
+
+    .benefit-item {
+        background: var(--secondary-bg);
+        padding: 15px 20px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--border-color);
+    }
+
+    h3 {
+        font-size: 1.8rem;
+        margin-top: 40px;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    h4 {
+        font-size: 1.3rem;
+        margin-top: 30px;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    ul {
+        text-align: left;
+        max-width: 650px;
+        margin: 20px auto;
+        font-size: 16px;
+    }
+
+    ul li {
+        margin-bottom: 12px;
+        color: var(--text-muted);
+    }
+
+    ul li strong {
+        color: var(--text-main);
+    }
+
+    .try-btn {
+        padding: 14px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .try-btn:hover {
+        background: var(--brand-color);
+        transform: translateY(-2px);
+    }
+
+    .trial-cta {
+        margin-top: 30px;
+        font-size: 1rem;
+        color: var(--text-muted);
+    }
+
+    .trial-cta a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .trial-cta a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

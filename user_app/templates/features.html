@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Features | Explore AI Capabilities{% endblock %}
+
+{% block content %}
+<div class="features-container">
+    <h1>Our AI-Powered Features</h1>
+    <p>Unlock the potential of AI with Virtue Mentor’s advanced tools and learning solutions. Explore our unique
+        features designed to enhance your learning experience.</p>
+
+    <div class="features-list">
+        <div class="feature-item">
+            <h2>🎯 AI-Powered Learning</h2>
+            <p>Get personalized learning recommendations based on your interests, progress, and skill level. The more
+                you interact, the better the system understands your learning preferences.</p>
+        </div>
+        <div class="feature-item">
+            <h2>🗣️ AI Voice Assistant</h2>
+            <p>Interact with an AI voice assistant to get quick explanations, practice problems, and learning support.
+                It's like having a tutor with you 24/7.</p>
+        </div>
+        <div class="feature-item">
+            <h2>📚 Content Generation</h2>
+            <p>Create engaging content with AI-driven text, images, quizzes, and learning materials. Whether you're
+                preparing for exams or need fresh learning resources, we've got you covered.</p>
+        </div>
+        <div class="feature-item">
+            <h2>🖼️ AI Image & Avatar Creation</h2>
+            <p>Generate high-quality AI avatars and images for your educational materials, presentations, and personal
+                projects. Customize the style to match your brand or theme.</p>
+        </div>
+        <div class="feature-item">
+            <h2>💾 Save & Resume Learning</h2>
+            <p>Save your progress and continue learning from where you left off. Our smart progress tracking system
+                ensures you never lose track of your learning journey.</p>
+        </div>
+        <div class="feature-item">
+            <h2>🔍 AI-Powered Search</h2>
+            <p>Quickly find the content you're looking for with AI-driven search capabilities. Search through articles,
+                videos, and resources, all tailored to your learning goals.</p>
+        </div>
+        <div class="feature-item">
+            <h2>🤖 AI-Powered Assessments</h2>
+            <p>Take personalized quizzes and assessments powered by AI. Receive instant feedback and suggestions to help
+                you improve in areas where you need the most support.</p>
+        </div>
+        <div class="feature-item">
+            <h2>🌐 Collaborative Learning</h2>
+            <p>Connect with peers and collaborate on learning projects. AI suggests collaborative projects based on your
+                interests and expertise, helping you build a community of learners.</p>
+        </div>
+        <div class="feature-item">
+            <h2>📈 Progress Analytics</h2>
+            <p>Get detailed insights into your learning progress with AI-generated analytics. Track your strengths,
+                weaknesses, and areas of improvement, and make data-driven learning decisions.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .features-container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 40px;
+        background: var(--card-bg);
+        /* Theme Variable */
+        border-radius: 12px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: var(--brand-color);
+    }
+
+    p {
+        font-size: 18px;
+        margin-bottom: 30px;
+        color: var(--text-muted);
+    }
+
+    .features-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .feature-item {
+        background: var(--secondary-bg);
+        /* Theme Variable */
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-color);
+    }
+
+    .feature-item h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: var(--brand-color);
+        font-weight: 600;
+    }
+
+    .feature-item p {
+        font-size: 15px;
+        color: var(--text-main);
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}

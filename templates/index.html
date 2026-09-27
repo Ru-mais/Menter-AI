@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Virtue Mentor | Elevate Your Learning{% endblock %}
+
+{% block content %}
+<!-- CSS for Styling -->
+<style>
+    .hero-section {
+        background: var(--banner-bg);
+        color: var(--banner-text);
+        padding: 80px 20px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 60px;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-main);
+        line-height: 1.2;
+    }
+
+    .hero-content p {
+        font-size: 1.25rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+        max-width: 600px;
+        line-height: 1.6;
+    }
+
+    .hero-image img {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        transform: perspective(1000px) rotateY(-5deg);
+        transition: transform 0.5s ease;
+    }
+
+    .hero-image img:hover {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+
+    /* Features */
+    .feature-card {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-color);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--accent-color);
+        margin-bottom: 20px;
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-color);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .testimonial-text {
+        font-size: 1.1rem;
+        font-style: italic;
+        color: var(--text-main);
+        margin-bottom: 20px;
+    }
+
+    .testimonial-author {
+        font-weight: 600;
+        color: var(--accent-color);
+    }
+
+    /* Partners */
+    .partner-logo {
+        opacity: 0.6;
+        transition: opacity 0.3s;
+        filter: grayscale(100%);
+    }
+
+    .partner-logo:hover {
+        opacity: 1;
+        filter: grayscale(0%);
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="row hero-section align-items-center mx-1">
+    <div class="col-lg-6 hero-content px-4">
+        <h1>Transform Words to Voice, Ideas to Reality.</h1>
+        <p>Experience AI-powered personalized learning with voice explanations and avatars. Master complex concepts
+            effortlessly.</p>
+        {% if not user.is_authenticated %}
+        <div class="d-flex gap-3">
+            <a href="{% url 'user_app:register' %}" class="btn btn-premium btn-lg px-5">Get Started</a>
+            <a href="{% url 'user_app:login' %}" class="btn btn-outline-primary btn-lg px-5">Login</a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-6 hero-image text-center mt-5 mt-lg-0">
+        <img src="{% static 'images/girl.png' %}" alt="AI Learning Assistant">
+    </div>
+</div>
+
+<!-- About Us -->
+<div class="container my-5 py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-12 text-center mb-5">
+            <h6 class="text-uppercase fw-bold" style="color: var(--accent-color); letter-spacing: 2px;">About Us</h6>
+            <h2 class="fw-bold display-5 mb-3">Empowering Your Learning Journey</h2>
+            <p class="lead text-muted mx-auto" style="max-width: 800px;">
+                We make education simple, effective, and accessible using AI-driven insights and interactive tools.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <i class="ri-brain-line feature-icon"></i>
+                <h4>AI Personalization</h4>
+                <p class="text-muted">Adapts to your unique learning style tailored to individual needs.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <i class="ri-voiceprint-line feature-icon"></i>
+                <h4>Voice Explanations</h4>
+                <p class="text-muted">Clear voice-based explanations for difficult topics.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <i class="ri-gamepad-line feature-icon"></i>
+                <h4>Gamification</h4>
+                <p class="text-muted">Stay motivated with fun, game-like elements in your journey.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="feature-card text-center">
+                <i class="ri-global-line feature-icon"></i>
+                <h4>Learn Anywhere</h4>
+                <p class="text-muted">Mobile-friendly platform to learn on the go, anytime.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vision Section -->
+<div class="container my-5 py-5 rounded-4" style="background: var(--card-bg); border: 1px solid var(--border-color);">
+    <div class="row align-items-center">
+        <div class="col-lg-6 px-5">
+            <h3 class="fw-bold mb-4">Our Vision & Mission</h3>
+            <ul class="list-unstyled">
+                <li class="mb-3 d-flex align-items-start">
+                    <i class="ri-checkbox-circle-fill me-3 mt-1"
+                        style="color: var(--accent-color); font-size: 1.2rem;"></i>
+                    <span><strong>Bridging the gap</strong> between learning and mastery with AI.</span>
+                </li>
+                <li class="mb-3 d-flex align-items-start">
+                    <i class="ri-checkbox-circle-fill me-3 mt-1"
+                        style="color: var(--accent-color); font-size: 1.2rem;"></i>
+                    <span><strong>Delivering premium content</strong> tailored to diverse styles.</span>
+                </li>
+                <li class="mb-3 d-flex align-items-start">
+                    <i class="ri-checkbox-circle-fill me-3 mt-1"
+                        style="color: var(--accent-color); font-size: 1.2rem;"></i>
+                    <span><strong>Empowering professionals</strong> with cutting-edge tools.</span>
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6 text-center">
+            <img src="{% static 'images/11.jpeg' %}" alt="Vision" class="img-fluid rounded-4 shadow-lg"
+                style="max-height: 400px; width: auto;">
+        </div>
+    </div>
+</div>
+
+
+<!-- Testimonials -->
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">What Our Users Say</h2>
+    </div>
+    <div class="row g-4">
+        {% for testimonial in testimonials %}
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"{{ testimonial.content }}"</p>
+                <div class="testimonial-author">- {{ testimonial.author_name }}</div>
+                {% if testimonial.role %}
+                <small class="text-secondary" style="font-size: 0.9em; display:block; margin-top:5px;">{{
+                    testimonial.role }}</small>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Virtue Mentor has completely changed the way I learn and grow
+                    professionally!"</p>
+                <div class="testimonial-author">- Sarang</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"The AI-powered learning explanations are fantastic and truly engaging."</p>
+                <div class="testimonial-author">- Nabeel</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Highly recommended for anyone looking for a smarter learning experience."
+                </p>
+                <div class="testimonial-author">- Irfan</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- FAQs -->
+<div class="container my-5" style="max-width: 900px;">
+    <h2 class="text-center fw-bold mb-5">Frequently Asked Questions</h2>
+    <div class="accordion" id="faqAccordion">
+        <div class="accordion-item mb-3 rounded shadow-sm">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne">
+                    How does AI-powered learning work?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Our AI-driven platform leverages advanced algorithms to analyze your learning progress, adjusting
+                    content to your specific needs and preferences.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item mb-3 rounded shadow-sm">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo">
+                    Is Virtue Mentor AI free to use?
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Virtue Mentor offers both free and premium plans. The free plan provides basic access, while premium
+                    unlocks advanced AI tools.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item mb-3 rounded shadow-sm">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree">
+                    What are the benefits of the Premium Plan?
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    Premium includes unlimited AI voice usage, priority support, watermark-free content, and exclusive
+                    tools.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="container text-center my-5 py-5">
+    <h2 class="fw-bold mb-3">Ready to Transform Your Learning?</h2>
+    <p class="lead text-muted mb-4">Join thousands of learners worldwide.</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'user_app:register' %}" class="btn btn-premium btn-lg px-5">Get Started Now</a>
+    {% endif %}
+</div>
+
+{% endblock %}

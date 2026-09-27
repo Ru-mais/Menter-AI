@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile | VirtueMentor AI{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-7">
+        <!-- Edit Card -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5"
+            style="background: var(--card-bg); border: 1px solid var(--border-color) !important;">
+            <div class="text-center mb-5">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                    style="width: 80px; height: 80px; background: var(--secondary-bg);">
+                    <i class="ri-edit-box-line" style="font-size: 2.5rem; color: var(--accent-color);"></i>
+                </div>
+                <h2 class="fw-bold" style="color: var(--text-main);">Update Your Profile</h2>
+                <p class="text-muted">Keep your information accurate and up to date.</p>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-3 border-0 shadow-sm mb-4"
+                role="alert">
+                <i class="ri-information-line me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <div class="row g-3">
+                    <!-- Name Fields -->
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name" class="form-label small fw-bold text-uppercase text-muted">First
+                            Name</label>
+                        <input type="text" class="form-control rounded-3 py-2" id="first_name" name="first_name"
+                            value="{{ user.first_name }}" required
+                            style="background: var(--primary-bg); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="last_name" class="form-label small fw-bold text-uppercase text-muted">Last
+                            Name</label>
+                        <input type="text" class="form-control rounded-3 py-2" id="last_name" name="last_name"
+                            value="{{ user.last_name }}" required
+                            style="background: var(--primary-bg); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+
+                    <!-- Contact Fields -->
+                    <div class="col-12 mb-3">
+                        <label for="email" class="form-label small fw-bold text-uppercase text-muted">Email
+                            Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0"
+                                style="border-color: var(--border-color); color: var(--text-muted);">
+                                <i class="ri-mail-line"></i>
+                            </span>
+                            <input type="email" class="form-control rounded-end-3 py-2 border-start-0" id="email"
+                                name="email" value="{{ user.email }}" required
+                                style="background: var(--primary-bg); border-color: var(--border-color); color: var(--text-main);">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="username"
+                            class="form-label small fw-bold text-uppercase text-muted">Username</label>
+                        <input type="text" class="form-control rounded-3 py-2" id="username" name="username"
+                            value="{{ user.username }}" required
+                            style="background: var(--primary-bg); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label small fw-bold text-uppercase text-muted">Phone
+                            Number</label>
+                        <input type="text" class="form-control rounded-3 py-2" id="phone" name="phone"
+                            value="{{ user.phone|default:'' }}"
+                            style="background: var(--primary-bg); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+
+                    <!-- Read-Only Info -->
+                    <div class="col-12 mb-4">
+                        <div class="p-3 rounded-3"
+                            style="background: var(--secondary-bg); border: 1px dashed var(--accent-color);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="small fw-bold text-uppercase text-muted mb-0">Current Plan</p>
+                                    <span class="fw-bold" style="color: var(--brand-color);">
+                                        {{user.membership_type|default:"Free"|title}}</span>
+                                </div>
+                                <i class="ri-vip-crown-line" style="font-size: 1.5rem; color: var(--accent-color);"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 mt-2">
+                    <button type="submit" class="btn btn-premium btn-lg py-3 rounded-3">
+                        <i class="ri-save-line me-1"></i> Save Profile Changes
+                    </button>
+                    <a href="{% url 'user_app:user_profile' %}" class="btn btn-link py-2 text-decoration-none"
+                        style="color: var(--text-muted);">
+                        Cancel and Go Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

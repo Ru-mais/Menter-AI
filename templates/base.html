@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VirtuMentor Ai{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Light Mode Palette - Minimalist Green */
+            --primary-bg: #FFFFFF;
+            /* Pure White - Ultra Clean */
+            --secondary-bg: #F0FDF4;
+            /* Mint-50 - Subtle Depth */
+            --text-main: #022C22;
+            /* Deep Green/Black */
+            --text-muted: #374151;
+            /* Gray-700 */
+
+            --brand-color: #059669;
+            /* Emerald-600 */
+            --accent-color: #10B981;
+            /* Emerald-500 */
+
+            --navbar-bg: #FFFFFF;
+            --footer-bg: #064E3B;
+            /* Dark Emerald Footer */
+            --footer-text: #FFFFFF;
+            /* Pure White Text for Light Mode Footer */
+            --footer-link: #FFFFFF;
+            /* Pure White Links for Light Mode Footer */
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            /* Gray-200 */
+
+            --banner-bg: #FFFFFF;
+            /* Pure White Header (Minimalist) */
+            --banner-text: #059669;
+            /* Emerald Text */
+
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Palette - Luxury Navy & Gold (Restored) */
+            --primary-bg: #0f172a;
+            /* Slate-900 */
+            --secondary-bg: #1e293b;
+            /* Slate-800 */
+            --text-main: #f3f4f6;
+            --text-muted: #e5e7eb;
+            /* Updated to Light Gray/White for visibility */
+
+            --brand-color: #f3f4f6;
+            --accent-color: #d4af37;
+            /* Classic Gold */
+
+            --navbar-bg: #0f172a;
+            --footer-bg: #1e293b;
+            --footer-text: #e5e7eb;
+            --footer-link: #9ca3af;
+            /* Muted Gray Links for Dark Mode (Original) */
+            /* Light Gray Text for Dark Mode (Unchanged) */
+            --card-bg: #1e293b;
+            --border-color: #374151;
+
+            --banner-bg: #1e293b;
+            --banner-text: #f3f4f6;
+        }
+
+        /* Enforce variable usage for Bootstrap utility */
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: var(--navbar-bg);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            transition: background-color var(--transition-speed);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--text-main) !important;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-brand i {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-right: 8px;
+        }
+
+        .nav-link {
+            color: var(--text-main) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--accent-color);
+            transition: all var(--transition-speed);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color) !important;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color var(--transition-speed);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--secondary-bg);
+            color: var(--accent-color);
+        }
+
+        /* Main Content */
+        .main-container {
+            flex: 1;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 60px 0 20px;
+            margin-top: auto;
+            transition: background-color var(--transition-speed);
+        }
+
+        footer h5 {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: var(--footer-link) !important;
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        footer a:hover {
+            color: var(--accent-color) !important;
+        }
+
+        footer .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--footer-link) !important;
+            transition: transform var(--transition-speed), color var(--transition-speed);
+        }
+
+        footer .social-icons a:hover {
+            color: var(--accent-color) !important;
+            transform: translateY(-3px);
+        }
+
+        hr {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Buttons & Interactions */
+        .btn {
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        /* Override Default Bootstrap Colors */
+        .btn-primary,
+        .btn-success {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-primary:hover,
+        .btn-success:hover {
+            background-color: #8a7010 !important;
+            /* Darker Gold */
+            border-color: #8a7010 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-outline-primary,
+        .btn-outline-success {
+            color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-success:hover {
+            background-color: var(--accent-color) !important;
+            color: white !important;
+        }
+
+        .btn-premium {
+            background-color: var(--accent-color);
+            color: #111827;
+            border: 2px solid var(--accent-color);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+        }
+
+        .btn-premium:hover {
+            background: transparent;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), background-color var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="ri-fire-fill"></i> VirtuMentor Ai
+            </a>
+            <div class="theme-toggle ms-auto me-3 d-lg-none" title="Toggle Dark/Light Mode">
+                <i class="ri-moon-line"></i>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_app:user_dashboard' %}">Overview</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_app:features' %}">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_app:pricing' %}">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_app:contact' %}">Contact</a></li>
+                    {% if user.is_authenticated %}
+
+                    <li class="nav-item ms-lg-3">
+                        <form method="post" action="{% url 'user_app:logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-primary px-4">Logout</button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_app:login' %}">Login</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-premium px-4" href="{% url 'user_app:try_free' %}">Try Free</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Desktop Theme Toggle -->
+                    <li class="nav-item d-none d-lg-block">
+                        <div class="theme-toggle" title="Toggle Dark/Light Mode">
+                            <i class="ri-moon-line"></i>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div style="height: 80px;"></div>
+
+    <!-- Main Content -->
+    <div class="container main-container mt-5 mb-5">
+        {% if messages %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-3 border-0 shadow-sm mb-4"
+                    role="alert">
+                    <i class="ri-information-line me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'user_app:features' %}">Features</a></li>
+                        <li class="mb-2"><a href="{% url 'user_app:pricing' %}">Pricing</a></li>
+                        <li class="mb-2"><a href="{% url 'user_app:contact' %}">Contact</a></li>
+                        <li class="mb-2"><a href="{% url 'user_app:try_free' %}">Try Free</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4 text-white">
+                    <h5>Contact</h5>
+                    <p class="mb-2 text-white"><i class="ri-map-pin-line me-2 text-white"></i> Kannur ,Kerala</p>
+                    <p class="mb-2 text-white"><i class="ri-mail-line me-2 text-white"></i>support@menterai.com</p>
+                    <p class="mb-2 text-white"><i class="ri-phone-line me-2 text-white"></i> +91 6238323052</p>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="ri-facebook-fill"></i></a>
+                        <a href="#"><i class="ri-instagram-line"></i></a>
+                        <a href="#"><i class="ri-twitter-x-line"></i></a>
+                        <a href="#"><i class="ri-linkedin-fill"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small text-white">&copy; 2025 VirtuMentor Ai. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">
+                        <i class="ri-paypal-fill fs-4 mx-1"></i>
+                        <i class="ri-visa-line fs-4 mx-1"></i>
+                        <i class="ri-mastercard-fill fs-4 mx-1"></i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Check for saved theme preference or default to light
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const toggleBtns = document.querySelectorAll('.theme-toggle');
+
+        function updateIcons(theme) {
+            toggleBtns.forEach(btn => {
+                const icon = btn.querySelector('i');
+                if (theme === 'dark') {
+                    icon.classList.remove('ri-moon-line');
+                    icon.classList.add('ri-sun-line');
+                } else {
+                    icon.classList.remove('ri-sun-line');
+                    icon.classList.add('ri-moon-line');
+                }
+            });
+        }
+
+        // Apply saved theme on load
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            updateIcons('dark');
+        }
+
+        // Toggle Event Listener
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                let theme = document.documentElement.getAttribute('data-theme');
+
+                if (theme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    updateIcons('light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateIcons('dark');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register | AI-Powered User Profile{% endblock %}
+
+{% block content %}
+<style>
+    .register-card {
+        background: var(--card-bg);
+    }
+
+    .register-input,
+    .register-addon {
+        background-color: var(--input-bg, #f8f9fa) !important;
+        border-color: var(--border-color, #dee2e6);
+        color: var(--text-main);
+        transition: all 0.3s ease;
+    }
+
+    .register-addon {
+        border-right: 0;
+    }
+
+    .register-input {
+        border-left: 0;
+    }
+
+    .register-input:focus {
+        background-color: var(--input-bg, #fff) !important;
+        border-color: var(--accent-color);
+        box-shadow: none;
+        color: var(--text-main);
+    }
+
+    .input-group:focus-within .register-addon,
+    .input-group:focus-within .register-input {
+        border-color: var(--accent-color);
+        background-color: var(--input-bg-focus, #fff) !important;
+    }
+
+    .input-group:focus-within .input-group-text i {
+        color: var(--accent-color) !important;
+    }
+
+    [data-theme="dark"] .register-input,
+    [data-theme="dark"] .register-addon {
+        --input-bg: rgba(255, 255, 255, 0.05);
+        --input-bg-focus: rgba(255, 255, 255, 0.1);
+        --border-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .register-card label,
+    [data-theme="dark"] .register-card .h3,
+    [data-theme="dark"] .register-card h3 {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .text-muted {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    [data-theme="dark"] .register-input::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    label {
+        color: var(--text-main);
+    }
+</style>
+
+<div class="row align-items-center justify-content-center min-vh-100 px-4">
+    <div class="col-lg-6 col-md-8">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden register-card">
+            <div class="card-header bg-transparent text-center border-0 pt-4 pb-2">
+                <h3 class="fw-bold" style="color: var(--brand-color);">Create Your Account</h3>
+                <p class="text-muted small">Join VirtuMentor AI today</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+                <form method="POST" action="{% url 'user_app:register' %}" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold">Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text register-addon"><i class="ri-user-line text-muted"></i></span>
+                            <input type="text" class="form-control register-input" id="username" name="username"
+                                placeholder="Enter your full name" required>
+                        </div>
+                        <small class="text-danger" id="usernameError"></small>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text register-addon"><i class="ri-mail-line text-muted"></i></span>
+                            <input type="email" class="form-control register-input" id="email" name="email"
+                                placeholder="Enter your email address" required>
+                        </div>
+                        <small class="text-danger" id="emailError"></small>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label fw-semibold">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text register-addon"><i
+                                    class="ri-phone-line text-muted"></i></span>
+                            <input type="tel" class="form-control register-input" id="phone" name="phone"
+                                placeholder="Enter your phone number">
+                        </div>
+                        <small class="text-danger" id="phoneError"></small>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-semibold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text register-addon"><i class="ri-lock-line text-muted"></i></span>
+                            <input type="password" class="form-control register-input" id="password" name="password"
+                                placeholder="Enter your password" required>
+                        </div>
+                        <small class="text-danger" id="passwordError"></small>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label fw-semibold">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text register-addon"><i
+                                    class="ri-lock-unlock-line text-muted"></i></span>
+                            <input type="password" class="form-control register-input" id="confirm_password"
+                                name="confirm_password" placeholder="Confirm your password" required>
+                        </div>
+                        <small class="text-danger" id="confirmPasswordError"></small>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                        <label class="form-check-label text-muted small" for="terms">
+                            I agree to the <a href="{% url 'user_app:terms' %}" class="text-decoration-none"
+                                style="color: var(--accent-color);">Terms & Conditions</a> and <a
+                                href="{% url 'user_app:privacy_policy' %}" class="text-decoration-none"
+                                style="color: var(--accent-color);">Privacy Policy</a>.
+                        </label>
+                        <small class="text-danger d-block" id="termsError"></small>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-premium py-2 fw-bold">
+                            <i class="ri-user-add-line me-2"></i> Sign Up
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center">
+                    <p class="text-muted mb-0">Already have an account? <a href="{% url 'user_app:login' %}"
+                            class="fw-bold text-decoration-none" style="color: var(--accent-color);">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Live Form Validation -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const phone = document.getElementById("phone");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirm_password");
+        const terms = document.getElementById("terms");
+        const submitBtn = document.querySelector("button[type='submit']");
+
+        // Error message elements
+        const usernameError = document.getElementById("usernameError");
+        const emailError = document.getElementById("emailError");
+        const phoneError = document.getElementById("phoneError");
+        const passwordError = document.getElementById("passwordError");
+        const confirmPasswordError = document.getElementById("confirmPasswordError");
+        const termsError = document.getElementById("termsError");
+
+        // Regular expressions for validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\+?\d{10,10}$/;
+        const strongPasswordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        // Validation function
+        function validateForm() {
+            let isValid = true;
+
+            // Validate Username
+            if (username.value.trim().length < 3) {
+                usernameError.textContent = "Name must be at least 3 characters";
+                isValid = false;
+            } else {
+                usernameError.textContent = "";
+            }
+
+            // Validate Email
+            if (!emailRegex.test(email.value.trim())) {
+                emailError.textContent = "Enter a valid email";
+                isValid = false;
+            } else {
+                emailError.textContent = "";
+            }
+
+            // Validate Phone
+            if (phone.value && !phoneRegex.test(phone.value.trim())) {
+                phoneError.textContent = "Enter a valid phone number";
+                isValid = false;
+            } else {
+                phoneError.textContent = "";
+            }
+
+            // Validate Password
+            if (!strongPasswordRegex.test(password.value)) {
+                passwordError.textContent = "Password must be 8+ characters, include uppercase, lowercase, number & symbol";
+                isValid = false;
+            } else {
+                passwordError.textContent = "";
+            }
+
+            // Validate Confirm Password
+            if (password.value !== confirmPassword.value) {
+                confirmPasswordError.textContent = "Passwords do not match";
+                isValid = false;
+            } else {
+                confirmPasswordError.textContent = "";
+            }
+
+            // Validate Terms
+            if (!terms.checked) {
+                termsError.textContent = "You must agree to the terms and conditions";
+                isValid = false;
+            } else {
+                termsError.textContent = "";
+            }
+
+            submitBtn.disabled = !isValid;
+        }
+
+        // Event Listeners
+        [username, email, phone, password, confirmPassword, terms].forEach(field => {
+            field.addEventListener("input", validateForm);
+        });
+    });
+</script>
+
+{% endblock %}

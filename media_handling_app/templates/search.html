@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Try for Free | AI-Powered Learning" %}{% endblock %}
+
+{% block extra_head %}
+<!-- Add this inside your <head> section in base.html or here -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/p5.js"></script> <!-- For Avatar Lip Syncing -->
+<style>
+    .search-container {
+        border-radius: 20px;
+        /* Premium Gradient Green for Light Mode */
+        background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+        box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
+        transition: background 0.3s ease;
+    }
+
+    [data-theme="dark"] .search-container {
+        /* Dark Gradient for Dark Mode */
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid var(--border-color);
+    }
+
+    [data-theme="dark"] #result,
+    [data-theme="dark"] #result h5,
+    [data-theme="dark"] #result p {
+        color: #ffffff !important;
+    }
+
+    /* Scrollable Explanation Container */
+    .explanation-scroll {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+    }
+
+    /* Webkit Scrollbar Styling */
+    .explanation-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .explanation-scroll::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+
+    .explanation-scroll::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+    }
+
+    .explanation-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Dark Mode Scrollbar */
+    [data-theme="dark"] .explanation-scroll {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .explanation-scroll::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .explanation-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    [data-theme="dark"] .explanation-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-container profile_container d-flex flex-column align-items-center py-5">
+    <h2>
+        {% blocktranslate %}Welcome, {{ first_name }}!{% endblocktranslate %}
+    </h2>
+
+    <div class="profile_holder container">
+        <div class="row align-items-center">
+
+            <!-- Avatar Section -->
+            <div
+                class="avatar_holder col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-5 rounded-start">
+                <!-- Render video player if avatar_video_url exists -->
+                {% if avatar_video_url %}
+                <video id="avatar" width="300" controls>
+                    <source src="{{ avatar_video_url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% else %}
+                <video id="avatar" class="img-fluid rounded-circle mb-5" width="150" autoplay muted loop playsinline>
+                    <source src="{% static 'images/preview_video_target.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% endif %}
+
+                <h4 class="fw-bold">Jex</h4>
+                <p class="text-muted">{% trans "AI Learner | Enthusiast" %}</p>
+            </div>
+
+            <!-- Search & Result Section -->
+            <div class="profile_holder-right col-md-6 text-white p-5 rounded-end">
+                <!-- Display remaining attempts or error message -->
+                {% if error %}
+                <p class="text-danger fw-semibold mb-3">{{ error }}</p>
+                {% elif remaining_prompts is not None %}
+                <p class="mb-3">Remaining attempts: {{ remaining_prompts }}</p>
+                {% endif %}
+
+                <form id="searchForm" method="POST" action="{% url 'media_handling_app:search' %}">
+                    {% csrf_token %}
+                    <div class="mb-3 position-relative">
+                        <input type="text" id="topic" name="topic"
+                            placeholder="{% trans 'What do you want to learn?' %}" class="form-control p-3 pe-5"
+                            required>
+                        <button type="button" id="mic-btn"
+                            class="btn position-absolute top-50 end-0 translate-middle-y text-muted me-2"
+                            style="background: none; border: none; z-index: 10;">
+                            <i class="ri-mic-line fs-4"></i>
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <select id="language" name="language" class="form-select p-3 select2-language">
+                            <option value="ar" data-flag="🇸🇦">{% trans "Arabic" %}</option>
+                            <option value="bn" data-flag="🇧🇩">{% trans "Bengali" %}</option>
+                            <option value="de" data-flag="🇩🇪">{% trans "German" %}</option>
+                            <option value="en" data-flag="🇬🇧">{% trans "English" %}</option>
+                            <option value="es" data-flag="🇪🇸">{% trans "Spanish" %}</option>
+                            <option value="fr" data-flag="🇫🇷">{% trans "French" %}</option>
+                            <option value="gu" data-flag="🇮🇳">{% trans "Gujarati" %}</option>
+                            <option value="hi" data-flag="🇮🇳">{% trans "Hindi" %}</option>
+                            <option value="it" data-flag="🇮🇹">{% trans "Italian" %}</option>
+                            <option value="ja" data-flag="🇯🇵">{% trans "Japanese" %}</option>
+                            <option value="ko" data-flag="🇰🇷">{% trans "Korean" %}</option>
+                            <option value="ml" data-flag="🇮🇳">{% trans "Malayalam" %}</option>
+                            <option value="mr" data-flag="🇮🇳">{% trans "Marathi" %}</option>
+                            <option value="pa" data-flag="🇮🇳">{% trans "Punjabi" %}</option>
+                            <option value="pt" data-flag="🇵🇹">{% trans "Portuguese" %}</option>
+                            <option value="ru" data-flag="🇷🇺">{% trans "Russian" %}</option>
+                            <option value="ta" data-flag="🇮🇳">{% trans "Tamil" %}</option>
+                            <option value="te" data-flag="🇮🇳">{% trans "Telugu" %}</option>
+                            <option value="tr" data-flag="🇹🇷">{% trans "Turkish" %}</option>
+                            <option value="ur" data-flag="🇵🇰">{% trans "Urdu" %}</option>
+                            <option value="vi" data-flag="🇻🇳">{% trans "Vietnamese" %}</option>
+                            <option value="zh" data-flag="🇨🇳">{% trans "Chinese" %}</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn w-100 py-3 fw-semibold rounded-lg text-white"
+                        style="background-color: #6BC785;">
+                        <i class="ri-search-line"></i> {% trans "Search" %}
+                    </button>
+                </form>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const micBtn = document.getElementById('mic-btn');
+                        const topicInput = document.getElementById('topic');
+                        const micIcon = micBtn.querySelector('i');
+
+                        // Check for browser support
+                        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                            const recognition = new SpeechRecognition();
+
+                            recognition.continuous = false;
+                            recognition.interimResults = false;
+                            recognition.lang = 'en-US'; // Default to English, can be dynamic based on selection
+
+                            // Update language when dropdown changes
+                            const languageSelect = document.getElementById('language');
+                            languageSelect.addEventListener('change', function () {
+                                // Map select values to BCP 47 language tags if needed
+                                // For now, we'll use the value from the dropdown if it's a valid code, 
+                                // or default mapping. The dropdown uses 2-letter codes.
+                                // Web Speech API allows 2-letter codes like 'en', 'es', etc.
+                                recognition.lang = this.value;
+                            });
+
+                            micBtn.addEventListener('click', function () {
+                                if (micIcon.classList.contains('ri-mic-line')) {
+                                    recognition.start();
+                                } else {
+                                    recognition.stop();
+                                }
+                            });
+
+                            recognition.onstart = function () {
+                                micIcon.classList.remove('ri-mic-line');
+                                micIcon.classList.add('ri-mic-fill');
+                                micIcon.style.color = '#ef4444'; // Red color to indicate recording
+                                micBtn.classList.add('text-danger');
+                                micBtn.classList.remove('text-muted');
+                            };
+
+                            recognition.onend = function () {
+                                micIcon.classList.remove('ri-mic-fill');
+                                micIcon.classList.add('ri-mic-line');
+                                micIcon.style.color = ''; // Reset color
+                                micBtn.classList.remove('text-danger');
+                                micBtn.classList.add('text-muted');
+                            };
+
+                            recognition.onresult = function (event) {
+                                const transcript = event.results[0][0].transcript;
+                                topicInput.value = transcript;
+                                // Optional: Auto-submit form
+                                // document.querySelector('form').submit();
+                            };
+
+                            recognition.onerror = function (event) {
+                                console.error('Speech recognition error', event.error);
+                                micIcon.classList.remove('ri-mic-fill');
+                                micIcon.classList.add('ri-mic-line');
+                                micIcon.style.color = '';
+                                micBtn.classList.remove('text-danger');
+                                micBtn.classList.add('text-muted');
+                            };
+                        } else {
+                            micBtn.style.display = 'none'; // Hide button if not supported
+                            console.log('Web Speech API not supported in this browser.');
+                        }
+                    });
+                </script>
+
+                {% if explanation %}
+                <div id="result" class="mt-4" style="color: var(--text-main);">
+                    <h5 class="mb-3"><strong>{% trans "Explanation:" %}</strong></h5>
+                    <div class="explanation-scroll mb-3"
+                        style="white-space: pre-wrap; word-break: break-word; font-size: 1rem; line-height: 1.6; padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); max-height: 400px; overflow-y: auto;">
+                        {{ explanation }}
+                    </div>
+                    {% if audio_url %}
+                    <audio id="audio" controls autoplay class="mt-3">
+                        <source src="{{ audio_url }}" type="audio/mpeg">
+                        {% trans "Your browser does not support the audio element." %}
+                    </audio>
+                    {% endif %}
+                </div>
+
+                <!-- Avatar Lip Syncing (Advanced Version) -->
+                <div id="avatarLipSync">
+                    <script>
+                        var audio = document.getElementById('audio');
+                        audio.addEventListener('play', function () {
+                            syncAvatarWithAudio();
+                        });
+
+                        function syncAvatarWithAudio() {
+                            var avatar = document.getElementById('avatar');
+                            var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            var analyser = audioContext.createAnalyser();
+                            var source = audioContext.createMediaElementSource(audio);
+                            source.connect(analyser);
+                            analyser.connect(audioContext.destination);
+
+                            var bufferLength = analyser.frequencyBinCount;
+                            var dataArray = new Uint8Array(bufferLength);
+
+                            function animate() {
+                                analyser.getByteFrequencyData(dataArray);
+                                var averageFrequency = 0;
+
+                                for (var i = 0; i < bufferLength; i++) {
+                                    averageFrequency += dataArray[i];
+                                }
+
+                                averageFrequency /= bufferLength;
+                                if (averageFrequency > 100) {
+                                    avatar.style.transform = 'scale(1.1)';
+                                } else {
+                                    avatar.style.transform = 'scale(1)';
+                                }
+
+                                requestAnimationFrame(animate);
+                            }
+
+                            animate();
+                        }
+                    </script>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay d-none">
+    <div class="spinner-container text-center">
+        <div class="spinner-border text-white mb-3" role="status" style="width: 4rem; height: 4rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h3 class="text-white fw-bold">Thinking...</h3>
+        <p class="text-white opacity-75 fs-5">Crafting the perfect response for you</p>
+    </div>
+</div>
+
+<style>
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(5, 150, 105, 0.95);
+        /* Brand color with high opacity */
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    [data-theme="dark"] .loading-overlay {
+        background: rgba(15, 23, 42, 0.95);
+        /* Dark theme bg */
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchForm = document.getElementById('searchForm');
+        const overlay = document.getElementById('loadingOverlay');
+        const remainingPrompts = parseInt("{{ remaining_prompts|default:'0' }}", 10);
+
+        if (searchForm) {
+            searchForm.addEventListener('submit', function (e) {
+                if (remainingPrompts <= 0) {
+                    e.preventDefault();
+                    alert("You have run out of prompts. Please purchase a plan to continue.");
+                    return false;
+                }
+                // Show overlay immediately on submit
+                overlay.classList.remove('d-none');
+                overlay.classList.add('d-flex');
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.select2-language').select2({
+            templateResult: formatLanguage,
+            templateSelection: formatLanguage,
+            minimumResultsForSearch: Infinity
+        });
+
+        function formatLanguage(lang) {
+            if (!lang.id) { return lang.text; }
+            var flag = $(lang.element).data('flag');
+            return $('<span>' + flag + ' ' + lang.text + '</span>');
+        }
+    });
+</script>
+{% endblock %}

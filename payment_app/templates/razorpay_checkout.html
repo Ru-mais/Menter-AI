@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Checkout</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Complete Your Payment</h2>
+    <p>Amount: ₹{{ display_amount }} ({{ currency }})</p>
+    
+    <form name="razorpay-form" action="{% url 'payment_app:payment_success' %}" method="POST" id="payment-form">
+        <input type="hidden" name="razorpay_order_id" value="{{ order_id }}" />
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id" />
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature" />
+
+        <button type="submit" id="pay-button" class="btn btn-primary">Pay Now</button>
+    </form>
+
+    <script type="text/javascript">
+        var options = {
+            "key": "{{ razorpay_key_id }}", // Your Razorpay key ID
+            "amount": "{{ amount }}", // Amount in paise (1 INR = 100 paise)
+            "currency": "{{ currency }}",
+            "order_id": "{{ order_id }}", // Generated order ID from Razorpay
+            "name": "Your Company Name",
+            "description": "Payment for order",
+            "image": "https://yourcompany.com/logo.png", // Optional company logo
+            "handler": function (response) {
+                // Populate the hidden form fields
+                document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                document.getElementById('razorpay_signature').value = response.razorpay_signature;
+
+                // Submit the form
+                document.forms['razorpay-form'].submit();
+            },
+            "prefill": {
+                "name": "{{ first_name }}", // Optionally prefill user name
+                "email": "{{ user.email }}", // Optionally prefill user email
+                "contact": "{{ user.phone }}" // Optionally prefill user phone
+            },
+            "theme": {
+                "color": "#F37254" // Optional theme color for the Razorpay checkout form
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        document.getElementById('pay-button').onclick = function (e) {
+            e.preventDefault();
+            rzp1.open();
+        };
+    </script>
+</body>
+</html>
