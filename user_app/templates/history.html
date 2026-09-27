@@ -4,56 +4,119 @@
 {% block title %}Learning History | AI-Powered Learning{% endblock %}
 
 {% block content %}
-<div class="container py-6">
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    }
+    [data-theme="dark"] .glass-card {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .session-item {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .session-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .message-user {
+        background-color: rgba(16, 185, 129, 0.1);
+        border-right: 3px solid var(--accent-color);
+        margin-left: 20px;
+        padding: 15px;
+        border-radius: 12px 0 12px 12px;
+    }
+    
+    .message-ai {
+        background-color: var(--secondary-bg);
+        border-left: 3px solid #6366f1;
+        margin-right: 20px;
+        padding: 15px;
+        border-radius: 0 12px 12px 12px;
+    }
+</style>
+
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <!-- Header -->
-            <div class="d-flex align-items-center mb-4">
-                <a href="{% url 'user_app:user_dashboard' %}" class="btn btn-outline-secondary rounded-circle me-3">
-                    <i class="ri-arrow-left-line"></i>
+            <div class="d-flex align-items-center mb-5 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+                <a href="{% url 'user_app:user_dashboard' %}" class="btn btn-light rounded-circle me-3 shadow-sm" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                    <i class="ri-arrow-left-line fs-5 text-dark"></i>
                 </a>
                 <div>
-                    <h2 class="fw-bold mb-0">Learning History</h2>
-                    <p class="text-muted mb-0">Review your past explorations and answers</p>
+                    <h2 class="fw-bold mb-1">Session History</h2>
+                    <p class="text-muted mb-0">Review your past AI mentor conversations.</p>
                 </div>
             </div>
 
             <!-- History List -->
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: var(--card-bg);">
-                <div class="card-body p-4">
-                    {% if user.recent_searches %}
-                    <div class="accordion" id="historyAccordion">
-                        {% for search in user.recent_searches %}
-                        {% if search.is_dict %}
-                        <div class="accordion-item border-0 mb-3 rounded-3 overflow-hidden"
-                            style="background: var(--secondary-bg);">
-                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                                <button class="accordion-button collapsed shadow-none fw-semibold" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}"
-                                    aria-expanded="false" aria-controls="collapse{{ forloop.counter }}"
-                                    style="color: var(--text-main); background: transparent;">
-                                    <span class="me-auto">{{ search.prompt }}</span>
-                                    <span class="badge bg-light text-dark ms-2">{{ search.timestamp }}</span>
-                                </button>
-                            </h2>
-                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
-                                aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#historyAccordion">
-                                <div class="accordion-body text-muted border-top border-light">
-                                    {{ search.answer|linebreaks }}
+            <div class="glass-card rounded-4 p-4">
+                {% if sessions %}
+                <div class="accordion" id="historyAccordion">
+                    {% for session in sessions %}
+                    <div class="accordion-item session-item mb-3 rounded-4 overflow-hidden border-0">
+                        <h2 class="accordion-header" id="heading{{ session.id }}">
+                            <button class="accordion-button collapsed shadow-none p-4" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse{{ session.id }}"
+                                aria-expanded="false" aria-controls="collapse{{ session.id }}"
+                                style="background: transparent;">
+                                <div class="d-flex align-items-center w-100 me-3">
+                                    <div class="icon-circle me-3 d-flex align-items-center justify-content-center rounded-circle"
+                                        style="width: 45px; height: 45px; background: rgba(16, 185, 129, 0.1); color: var(--accent-color); min-width: 45px;">
+                                        <i class="ri-chat-3-line fs-5"></i>
+                                    </div>
+                                    <div class="flex-grow-1 text-truncate">
+                                        <h6 class="mb-1 fw-bold text-main text-truncate">{{ session.title }}</h6>
+                                        <small class="text-muted"><i class="ri-calendar-event-line me-1"></i>{{ session.created_at|date:"M d, Y h:i A" }}</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ session.id }}" class="accordion-collapse collapse"
+                            aria-labelledby="heading{{ session.id }}" data-bs-parent="#historyAccordion">
+                            <div class="accordion-body border-top p-4" style="border-color: var(--border-color) !important;">
+                                <div class="d-flex flex-column gap-3">
+                                    {% for msg in session.messages.all %}
+                                        {% if msg.role == 'user' %}
+                                            <div class="message-user text-end align-self-end w-75">
+                                                <small class="text-muted d-block mb-1"><i class="ri-user-smile-line me-1"></i>You</small>
+                                                <p class="mb-0 text-dark">{{ msg.content }}</p>
+                                            </div>
+                                        {% else %}
+                                            <div class="message-ai align-self-start w-100">
+                                                <small class="text-muted d-block mb-1"><i class="ri-robot-line me-1"></i>AI Mentor</small>
+                                                <p class="mb-0" style="color: var(--text-main);">{{ msg.content|linebreaks }}</p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
-                        {% endfor %}
                     </div>
-                    {% else %}
-                    <div class="text-center py-5">
-                        <i class="ri-file-search-line fs-1 text-muted mb-3"></i>
-                        <p class="text-muted">No history found. Start exploring!</p>
-                        <a href="{% url 'media_handling_app:search' %}" class="btn btn-premium mt-2">Start Learning</a>
-                    </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="text-center py-5 my-4">
+                    <div class="icon-circle mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle"
+                        style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); color: var(--accent-color);">
+                        <i class="ri-ghost-line fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold text-main mb-2">No History Yet</h4>
+                    <p class="text-muted mb-4">Start interacting with the AI Mentor to see your session history here.</p>
+                    <a href="{% url 'media_handling_app:search' %}" class="btn btn-premium px-4 py-2 rounded-pill shadow-sm">Start Learning</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

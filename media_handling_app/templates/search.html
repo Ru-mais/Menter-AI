@@ -115,9 +115,9 @@
             <div class="profile_holder-right col-md-6 text-white p-5 rounded-end">
                 <!-- Display remaining attempts or error message -->
                 {% if error %}
-                <p class="text-danger fw-semibold mb-3">{{ error }}</p>
-                {% elif remaining_prompts is not None %}
-                <p class="mb-3">Remaining attempts: {{ remaining_prompts }}</p>
+                <p class="text-danger fw-semibold mb-3 bg-white bg-opacity-75 p-2 rounded">{{ error }}</p>
+                {% elif remaining_credits is not None %}
+                <p class="mb-3 fw-bold"><i class="ri-copper-coin-line me-1"></i> Available Credits: {{ remaining_credits }} <span class="text-white-50 ms-2 fw-normal">(Cost: 1 credit per generation)</span></p>
                 {% endif %}
 
                 <form id="searchForm" method="POST" action="{% url 'media_handling_app:search' %}">
@@ -346,13 +346,13 @@
     document.addEventListener('DOMContentLoaded', function () {
         const searchForm = document.getElementById('searchForm');
         const overlay = document.getElementById('loadingOverlay');
-        const remainingPrompts = parseInt("{{ remaining_prompts|default:'0' }}", 10);
+        const remainingCredits = parseInt("{{ remaining_credits|default:'0' }}", 10);
 
         if (searchForm) {
             searchForm.addEventListener('submit', function (e) {
-                if (remainingPrompts <= 0) {
+                if (remainingCredits < 1) {
                     e.preventDefault();
-                    alert("You have run out of prompts. Please purchase a plan to continue.");
+                    alert("You do not have enough credits (1 required). Please upgrade your plan.");
                     return false;
                 }
                 // Show overlay immediately on submit

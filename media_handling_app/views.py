@@ -372,8 +372,8 @@ def search(request):
         else:
             credits = 0
 
-        # If user has enough credits (1 for text, 5 for avatar)
-        if credits >= 6:
+        # If user has enough credits (1 for text)
+        if credits >= 1:
             language_name = LANGUAGE_MAP.get(language, 'English')
             if language != 'en':
                 full_prompt = f"Explain about '{prompt}' completely in {language_name}."
@@ -404,8 +404,9 @@ def search(request):
                 audio_file = None
 
             avatar_video_url = None
-            if audio_file:
-                avatar_video_url = create_talking_avatar(os.path.join("static", "images", "images.jpeg"), audio_file)
+            # Commenting out D-ID Avatar generation to save API usage/costs
+            # if audio_file:
+            #     avatar_video_url = create_talking_avatar(os.path.join("static", "images", "images.jpeg"), audio_file)
 
             # Log text API usage
             if user:
@@ -427,7 +428,7 @@ def search(request):
             
             # decrease credits and save if we have a user object
             if user:
-                user.credits = max(credits - 6, 0)
+                user.credits = max(credits - 1, 0)
                 
                 # Save to history
                 history_entry = {
@@ -474,7 +475,7 @@ def search(request):
             context['topic'] = prompt
         else:
             logger.warning("User has not enough credits left.")
-            context['error'] = "You do not have enough credits (6 required). Please upgrade your plan."
+            context['error'] = "You do not have enough credits (1 required). Please upgrade your plan."
             context['remaining_prompts'] = credits
             context['remaining_credits'] = credits
 
