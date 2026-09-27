@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Failed | AI-Powered Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0 text-center">
+                        <i class="ri-error-warning-line me-2"></i> Payment Failed
+                    </h3>
+                </div>
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="error-icon">
+                            <i class="ri-close-circle-line" style="font-size: 80px; color: #dc3545;"></i>
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-center mb-4">Oops! Something went wrong.</h4>
+                    
+                    <div class="alert alert-danger">
+                        <p class="mb-0">{{ message|default:"We couldn't process your payment. Please try again later." }}</p>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'payment_app:payment' %}" class="btn btn-primary btn-lg me-3">
+                            <i class="ri-restart-line me-2"></i> Try Again
+                        </a>
+                        <a href="{% url 'user_app:user_dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="ri-home-line me-2"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

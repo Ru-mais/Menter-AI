@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Select Plan | AI-Powered Learning{% endblock %}
+
+{% block content %}
+<style>
+    .payment-container {
+        border-radius: 20px;
+        /* Premium Gradient Green for Light Mode */
+        background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+        box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
+        transition: background 0.3s ease;
+    }
+
+    [data-theme="dark"] .payment-container {
+        /* Dark Gradient for Dark Mode */
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid var(--border-color);
+    }
+
+    .plan-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-color);
+    }
+
+    .plan-card h5 {
+        color: var(--text-main);
+    }
+
+    .plan-card p {
+        color: var(--text-muted);
+    }
+
+    .current-plan {
+        border: 2px solid var(--accent-color);
+        background: rgba(16, 185, 129, 0.05);
+    }
+
+    [data-theme="dark"] .current-plan {
+        background: rgba(16, 185, 129, 0.1);
+    }
+
+    .current-plan::before {
+        content: "Current Active Plan";
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: var(--accent-color);
+        color: #fff;
+        padding: 4px 12px;
+        border-bottom-left-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .avathar_holder {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .avathar_holder {
+        color: var(--accent-color) !important;
+    }
+
+    [data-theme="dark"] .avathar_holder .text-white,
+    [data-theme="dark"] .avathar_holder h3,
+    [data-theme="dark"] .avathar_holder h4,
+    [data-theme="dark"] .avathar_holder p,
+    [data-theme="dark"] .avathar_holder i {
+        color: var(--accent-color) !important;
+    }
+
+    [data-theme="dark"] .avathar_holder .border-white {
+        border-color: var(--accent-color) !important;
+    }
+</style>
+
+<div class="payment-container profile_container d-flex flex-column align-items-center py-5">
+    {% if current_plan %}
+    <p class="text-white mb-4 fs-5">Your current plan: <span class="fw-bold text-decoration-underline">
+            {{ current_plan|title }}</span>. Upgrade to unlock more power.</p>
+    {% else %}
+    <p class="text-white mb-4 fs-5">Choose the perfect plan for your journey.</p>
+    {% endif %}
+
+    <div class="profile_holder container">
+        <div class="row align-items-stretch g-0 rounded-4 overflow-hidden shadow-lg">
+            <!-- Avatar Section -->
+            <div
+                class="avathar_holder col-lg-5 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
+                <div class="mb-4 rounded-circle p-1 border border-2 border-white opacity-75">
+                    <i class="ri-user-star-line" style="font-size: 4rem;"></i>
+                </div>
+                <h3 class="fw-bold mb-2">Hi {{ first_name }}!</h3>
+                <h4 class="fw-light mb-3">Embark on Your AI Journey</h4>
+                <p class="mb-0 opacity-75">AI Enthusiast | Ready to Learn</p>
+            </div>
+
+            <!-- Payment Plan Selection -->
+            <div class="profile_holder-right col-lg-7 bg-white p-5" style="background: var(--card-bg) !important;">
+                <h4 class="mb-4 fw-bold" style="color: var(--text-main);">
+                    {% if current_plan %}Upgrade Your Plan{% else %}Select Your Plan{% endif %}
+                </h4>
+
+                <!-- Basic Plan -->
+                <div class="plan-card mb-3 p-4 {% if current_plan == 'basic' %}current-plan{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">Basic Plan</h5>
+                            <p class="mb-0 small">Essential AI learning features</p>
+                        </div>
+                        <div class="text-end">
+                            <h4 class="fw-bold mb-0" style="color: var(--brand-color);">₹499</h4>
+                            {% if current_plan == 'basic' %}
+                            <span class="badge bg-success-subtle text-success small mt-2">Active</span>
+                            {% else %}
+                            <a href="{% url 'payment_app:subscribe' 'basic' %}"
+                                class="btn btn-sm btn-outline-success mt-1 rounded-pill px-3">
+                                {% if current_plan %}Downgrade{% else %}Select{% endif %}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="plan-card mb-3 p-4 {% if current_plan == 'pro' %}current-plan{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">Pro Plan</h5>
+                            <p class="mb-0 small">Advanced AI learning tools</p>
+                        </div>
+                        <div class="text-end">
+                            <h4 class="fw-bold mb-0" style="color: var(--brand-color);">₹999</h4>
+                            {% if current_plan == 'pro' %}
+                            <span class="badge bg-success-subtle text-success small mt-2">Active</span>
+                            {% elif current_plan == 'premium' %}
+                            <a href="{% url 'payment_app:subscribe' 'pro' %}"
+                                class="btn btn-sm btn-outline-success mt-1 rounded-pill px-3">Downgrade</a>
+                            {% else %}
+                            <a href="{% url 'payment_app:subscribe' 'pro' %}"
+                                class="btn btn-sm btn-premium mt-1 rounded-pill px-3">
+                                {% if current_plan %}Upgrade{% else %}Select{% endif %}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="plan-card mb-3 p-4 {% if current_plan == 'premium' %}current-plan{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="fw-bold mb-1">Premium Plan</h5>
+                            <p class="mb-0 small">Complete AI learning experience</p>
+                        </div>
+                        <div class="text-end">
+                            <h4 class="fw-bold mb-0" style="color: var(--brand-color);">₹1499</h4>
+                            {% if current_plan == 'premium' %}
+                            <span class="badge bg-success-subtle text-success small mt-2">Active</span>
+                            {% else %}
+                            <a href="{% url 'payment_app:subscribe' 'premium' %}"
+                                class="btn btn-sm btn-premium mt-1 rounded-pill px-3">
+                                {% if current_plan %}Upgrade{% else %}Select{% endif %}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if current_plan %}
+                <div class="mt-4 text-center">
+                    <p class="small text-muted">
+                        <i class="ri-information-line me-1"></i>
+                        Changing your plan will take effect immediately.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

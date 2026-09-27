@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Settings | AI-Powered Learning{% endblock %}
+
+{% block content %}
+<style>
+    .settings-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .settings-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-color);
+    }
+
+    .settings-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(16, 185, 129, 0.1);
+        /* Emerald tint */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: var(--accent-color);
+        font-size: 1.8rem;
+    }
+
+    .settings-card h5 {
+        color: var(--text-main);
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .settings-card p {
+        color: var(--text-muted);
+    }
+
+    /* Premium Header */
+    .settings-header h2 {
+        background: linear-gradient(135deg, var(--brand-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="text-center mb-5 settings-header">
+        <h2 class="fw-bold display-5">System Settings</h2>
+        <p class="text-muted lead">Manage your account preferences and subscription</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Membership -->
+        <div class="col-md-6">
+            <div class="card h-100 settings-card shadow-sm">
+                <div class="card-body text-center p-5">
+                    <div class="settings-icon-wrapper">
+                        <i class="ri-vip-crown-fill"></i>
+                    </div>
+                    <h5 class="mb-3">Membership Status</h5>
+                    <p class="mb-4">
+                        Current Plan:
+                        <span class="badge rounded-pill bg-light text-dark border px-3 py-2 ms-1"
+                            style="font-size: 0.9em;">
+                            {{ user.membership_type|default:"Free Tier" }}
+                        </span>
+                    </p>
+                    {% if user.membership_type != "Premium" %}
+                    <a href="{% url 'payment_app:payment' %}" class="btn btn-premium w-100 rounded-pill">
+                        Upgrade to Premium
+                    </a>
+                    {% else %}
+                    <button class="btn btn-outline-success w-100 rounded-pill" disabled>
+                        <i class="ri-check-line me-1"></i> Active
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy -->
+        <div class="col-md-6">
+            <div class="card h-100 settings-card shadow-sm">
+                <div class="card-body text-center p-5">
+                    <div class="settings-icon-wrapper" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+                        <i class="ri-shield-check-fill"></i>
+                    </div>
+                    <h5 class="mb-3">Privacy & Security</h5>
+                    <p class="mb-4">
+                        Review how we handle your data and protect your privacy.
+                    </p>
+                    <a href="{% url 'user_app:privacy_policy' %}" class="btn btn-outline-primary w-100 rounded-pill">
+                        View Privacy Policy
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="col-md-12">
+            <div class="card settings-card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="settings-icon-wrapper mb-0 me-3"
+                            style="width: 50px; height: 50px; font-size: 1.5rem; background: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+                            <i class="ri-history-line"></i>
+                        </div>
+                        <h5 class="mb-0">Payment History</h5>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="border-0 rounded-start">Date</th>
+                                    <th scope="col" class="border-0">Amount</th>
+                                    <th scope="col" class="border-0">Method</th>
+                                    <th scope="col" class="border-0 rounded-end text-end">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in user.payments.all %}
+                                <tr>
+                                    <td class="fw-medium text-muted">{{ payment.payment_date|date:"M d, Y" }}</td>
+                                    <td class="fw-bold">₹{{ payment.amount }}</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="ri-bank-card-line me-1"></i> {{ payment.method|capfirst }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge bg-success-subtle text-success border border-success px-3">
+                                            {{ payment.status|title }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <i class="ri-file-list-line d-block fs-2 mb-2 opacity-50"></i>
+                                        No payment history found.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <div class="col-12 text-center mt-3">
+            <form method="post" action="{% url 'user_app:logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger px-5 rounded-pill">
+                    <i class="ri-logout-box-r-line me-2"></i> Sign Out
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

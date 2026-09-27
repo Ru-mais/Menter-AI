@@ -1,0 +1,391 @@
+{% load i18n static %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:" en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:" rtl,ltr" }}">
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% block stylesheet %}{% static " admin/css/base.css" %}{% endblock %}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    {% block extrastyle %}{% endblock %}
+    {% if LANGUAGE_BIDI %}
+    <link rel="stylesheet" href="{% block stylesheet_rtl %}{% static " admin/css/rtl.css" %}{% endblock %}">{% endif %}
+    {% block extrahead %}{% endblock %}
+    {% block responsive %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static " admin/css/responsive.css" %}">
+    {% endblock %}
+    {% block blockbots %}
+    <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --secondary-bg: #1e293b;
+            --sidebar-bg: #111827;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-color: #10B981;
+            --accent-hover: #059669;
+            --border-color: #374151;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --card-bg: #1e293b;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-header i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--accent-color);
+            border-right: 3px solid var(--accent-color);
+        }
+
+        .sidebar-menu i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-section-label {
+            padding: 15px 25px 5px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #6b7280;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .user-info div {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .user-info a {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .user-info a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Main Content */
+        .admin-main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* Topbar */
+        .admin-topbar {
+            background-color: var(--primary-bg);
+            /* Match body bg for cleaner look */
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breadcrumbs {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumbs a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Content Area */
+        #content {
+            padding: 40px;
+            flex: 1;
+        }
+
+        /* Overrides for Django Admin Default Styles */
+        #header {
+            display: none;
+        }
+
+        /* Hide default header */
+
+        h1 {
+            color: var(--text-main);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Tables and Modules */
+        .module {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .module caption {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        a.addlink {
+            color: white !important;
+        }
+
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-toggle {
+                display: block;
+                margin-right: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now " Z"
+    %}">
+
+    <!-- Sidebar -->
+    {% if not is_popup %}
+    <nav class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <i class="ri-fire-fill"></i>
+            <h1>VirtueMentor</h1>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="{% url 'admin:index' %}" class="{% if request.path == '/admin/' %}active{% endif %}">
+                        <i class="ri-dashboard-line"></i> Dashboard
+                    </a>
+                </li>
+
+                <div class="sidebar-section-label">Apps & Models</div>
+
+                {% if available_apps %}
+                {% for app in available_apps %}
+                {% for model in app.models %}
+                <li>
+                    <a href="{{ model.admin_url }}" class="{% if model.admin_url in request.path %}active{% endif %}">
+                        <!-- Dynamic Icon based on model name logic could go here, strictly hardcoded for now or generic -->
+                        <i class="ri-folder-line"></i> {{ model.name }}
+                    </a>
+                </li>
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+
+                <div class="sidebar-section-label">System</div>
+                <li>
+                    <a href="/">
+                        <i class="ri-home-line"></i> View Site
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin:password_change' %}">
+                        <i class="ri-key-line"></i> Change Password
+                    </a>
+                </li>
+                <li>
+                    <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+                        {% csrf_token %}
+                        <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
+                            <i class="ri-logout-box-line"></i> Log out
+                        </a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {{ user.username|first|upper }}
+                </div>
+                <div class="user-info">
+                    <div>{{ user.username }}</div>
+                    {% if user.is_superuser %}
+                    <span style="font-size: 0.7rem; color: var(--accent-color);">Super Admin</span>
+                    {% else %}
+                    <span style="font-size: 0.7rem; color: var(--text-muted);">Staff</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="admin-main">
+        {% if not is_popup %}
+        <div class="admin-topbar">
+            <div style="display: flex; align-items: center;">
+                <i class="ri-menu-line mobile-toggle"
+                    onclick="document.getElementById('adminSidebar').classList.toggle('open')"></i>
+                <div class="breadcrumbs">
+                    {% block breadcrumbs %}
+                    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+                    {% if title %} &rsaquo; {{ title }}{% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div id="content" class="{% block coltype %}colM{% endblock %}">
+            {% block messages %}
+            {% if messages %}
+            <ul class="messagelist">{% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message|capfirst }}</li>
+                    {% endfor %}
+            </ul>
+            {% endif %}
+            {% endblock messages %}
+
+            {% block pretitle %}{% endblock %}
+            {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+            {% block content %}
+            {% block object-tools %}{% endblock %}
+            {{ content }}
+            {% endblock %}
+            {% block sidebar %}{% endblock %}
+            <br class="clear">
+        </div>
+    </div>
+
+</body>
+
+</html>

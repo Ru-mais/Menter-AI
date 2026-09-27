@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy | AI-Powered User Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="color: #224F40;">Privacy Policy</h2>
+    <div class="card shadow-lg p-4" style="border-radius: 12px;background-color: #C2EFD4;">
+        <h4 class="fw-bold" style="color: #224F40;">Introduction</h4>
+        <p>At AI-Powered User Profile, we value your privacy. This privacy policy outlines how we collect, use, and protect your personal information when you use our website and services.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">1. Information We Collect</h4>
+        <p>We collect personal information such as your name, email address, phone number, and membership type when you register for our services. Additionally, we collect usage data to improve our platform.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">2. How We Use Your Information</h4>
+        <p>Your information is used to provide and personalize our services, communicate with you regarding your account, and send you promotional offers if you've opted in. We may also use the data to improve the functionality of our website.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">3. Sharing Your Information</h4>
+        <p>We do not sell or share your personal information with third parties except when necessary to provide the services, comply with the law, or protect our rights.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">4. Data Security</h4>
+        <p>We take appropriate security measures to protect your personal data from unauthorized access, alteration, disclosure, or destruction.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">5. Cookies</h4>
+        <p>We use cookies to enhance your user experience. Cookies are small data files stored on your device that help us analyze website traffic and provide a better user experience.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">6. Your Rights</h4>
+        <p>You have the right to access, update, or delete your personal information. If you wish to exercise any of these rights, please contact us at [your email address].</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">7. Changes to This Policy</h4>
+        <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the updated policy on our website. Please review it periodically.</p>
+
+        <h4 class="fw-bold" style="color: #224F40;">8. Contact Us</h4>
+        <p>If you have any questions about this privacy policy or our data practices, please contact us at support@virtumentor.com.</p>
+
+        <!-- Go to Dashboard Button -->
+        <div class="text-center mt-4">
+            <a href="{% url 'user_app:user_dashboard' %}" class="btn btn-success" style="background-color: #224F40; border-color: #224F40;">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pricing | AI-Powered Plans{% endblock %}
+
+{% block content %}
+<div class="pricing-container">
+
+    <h1>Choose the Perfect Plan</h1>
+    <p>Select a plan that best fits your needs and start experiencing AI-powered learning today. Explore our range of
+        plans designed for individuals, teams, and enterprises.</p>
+
+    <div class="pricing-table">
+        <!-- Basic Plan -->
+        <div class="plan basic">
+            <h2>Basic</h2>
+            <p class="price">Free</p>
+            <ul>
+                <li>✔ Limited AI Features</li>
+                <li>✔ Watermarked Images</li>
+                <li>✔ Standard Support (Email)</li>
+                <li>✔ Search Option Only</li>
+                <li>✔ Access to Free Learning Materials</li>
+            </ul>
+            <a href="/user_app/user_dashboard/"><button class="price-btn">Get Started</button></a>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="plan premium">
+            <h2>Premium</h2>
+            <p class="price">1499/month</p>
+            <ul>
+                <li>✔ Full AI Features & Advanced Learning Tools</li>
+                <li>✔ No Watermarks on Generated Content</li>
+                <li>✔ Priority Email & Chat Support</li>
+                <li>✔ Unlimited AI Voice Assist</li>
+                <li>✔ Personalized Learning Recommendations</li>
+                <li>✔ Access to Premium AI Models & Tools</li>
+                <li>✔ Avatar & Audio Facility</li>
+                <li>✔ Save Options for Content & Customizations</li>
+                <li>✔ Offline Learning Mode</li>
+                <li>✔ Exclusive Webinars & Workshops</li>
+            </ul>
+            <a href=" {% url 'payment_app:payment' %}"> <button class="price-btn">Upgrade</button></a>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="plan enterprise">
+            <h2>Enterprise</h2>
+            <p class="price">Custom Pricing</p>
+            <ul>
+                <li>✔ AI API Access for Business Integration</li>
+                <li>✔ Custom AI Solutions & Branding</li>
+                <li>✔ Dedicated Account Manager</li>
+                <li>✔ 24/7 VIP Support (Phone & Chat)</li>
+                <li>✔ Bulk User Access for Teams</li>
+                <li>✔ On-Premise AI Deployment (Optional)</li>
+                <li>✔ Full Data Privacy & Security Compliance</li>
+                <li>✔ Tailored Learning Paths for Teams</li>
+                <li>✔ Integration with HR Systems & Analytics</li>
+                <li>✔ Exclusive AI Feature Requests</li>
+            </ul>
+            <a href="/user_app/contact/"> <button class="price-btn">Contact Us</button></a>
+        </div>
+    </div>
+
+    <!-- Additional Section for Testimonials -->
+    <div class="testimonials-container">
+        <h2>What Our Customers Say</h2>
+        <p>Hear from our happy customers who have transformed their learning with AI-powered tools.</p>
+        <div class="testimonials">
+            <div class="testimonial-item">
+                <p>"The Premium plan has completely changed the way I learn. The AI-powered voice assistant and
+                    personalized recommendations are invaluable!"</p>
+                <p><strong>- Jane Doe, Student</strong></p>
+            </div>
+            <div class="testimonial-item">
+                <p>"We upgraded to the Enterprise plan for our team. The AI integration and support have boosted our
+                    productivity significantly!"</p>
+                <p><strong>- John Smith, HR Manager</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-container">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <h3>How does the AI Voice Assistant work?</h3>
+            <p>The AI Voice Assistant helps you get quick explanations and support for your learning materials. Simply
+                ask a question, and it will respond with relevant information!</p>
+        </div>
+        <div class="faq-item">
+            <h3>Can I cancel my subscription at any time?</h3>
+            <p>Yes, you can cancel your subscription anytime from your account settings. There' s no commitment
+                required for the Basic or Premium plans.</p>
+        </div>
+        <div class="faq-item">
+            <h3>What is included in the Enterprise plan?</h3>
+            <p>The Enterprise plan offers custom AI solutions, API access for business integration, dedicated support,
+                and a range of additional features tailored for large teams.</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- CSS Styling -->
+<style>
+    .pricing-container {
+        max-width: 1100px;
+        margin: auto;
+        padding: 40px;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--brand-color);
+    }
+
+    p {
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+        color: var(--text-muted);
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pricing-table {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .plan {
+        flex: 1;
+        min-width: 280px;
+        padding: 40px 30px;
+        background: var(--card-bg);
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .plan:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-color);
+    }
+
+    .plan h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--text-main);
+        font-weight: 700;
+    }
+
+    .price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        color: var(--brand-color);
+    }
+
+    .pricing-table ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .pricing-table ul li {
+        margin: 12px 0;
+        font-size: 1rem;
+        padding-left: 25px;
+        position: relative;
+        color: var(--text-main);
+    }
+
+    .pricing-table ul li::before {
+        content: "✔";
+        position: absolute;
+        left: 0;
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    .price-btn {
+        display: block;
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-underline-offset: none;
+        background: var(--primary-bg);
+        color: var(--text-main);
+        border: 2px solid var(--border-color);
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .price-btn:hover {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+
+    /* Plan Variations */
+    .basic {
+        border-top: 5px solid var(--text-muted);
+    }
+
+    .premium {
+        border-top: 5px solid var(--accent-color);
+        background: var(--secondary-bg);
+        /* Highlight Premium */
+    }
+
+    .premium .price-btn {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+
+    .premium .price-btn:hover {
+        background: var(--brand-color);
+        border-color: var(--brand-color);
+    }
+
+    .enterprise {
+        border-top: 5px solid var(--brand-color);
+    }
+
+    /* Testimonials & FAQ */
+    .testimonials-container,
+    .faq-container {
+        margin-top: 60px;
+        text-align: center;
+    }
+
+    .testimonials-container h2,
+    .faq-container h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+        color: var(--text-main);
+    }
+
+    .testimonial-item {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: var(--secondary-bg);
+        border-radius: 12px;
+    }
+
+    .testimonial-item p {
+        font-size: 1rem;
+        font-style: italic;
+        margin-bottom: 10px;
+    }
+
+    .faq-item {
+        background: var(--primary-bg);
+        margin-bottom: 15px;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: left;
+    }
+
+    .faq-item h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: var(--brand-color);
+    }
+
+    .faq-item p {
+        font-size: 0.95rem;
+        margin-bottom: 0;
+        text-align: left;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Learning History | AI-Powered Learning{% endblock %}
+
+{% block content %}
+<div class="container py-6">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'user_app:user_dashboard' %}" class="btn btn-outline-secondary rounded-circle me-3">
+                    <i class="ri-arrow-left-line"></i>
+                </a>
+                <div>
+                    <h2 class="fw-bold mb-0">Learning History</h2>
+                    <p class="text-muted mb-0">Review your past explorations and answers</p>
+                </div>
+            </div>
+
+            <!-- History List -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background-color: var(--card-bg);">
+                <div class="card-body p-4">
+                    {% if user.recent_searches %}
+                    <div class="accordion" id="historyAccordion">
+                        {% for search in user.recent_searches %}
+                        {% if search.is_dict %}
+                        <div class="accordion-item border-0 mb-3 rounded-3 overflow-hidden"
+                            style="background: var(--secondary-bg);">
+                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                <button class="accordion-button collapsed shadow-none fw-semibold" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}"
+                                    aria-expanded="false" aria-controls="collapse{{ forloop.counter }}"
+                                    style="color: var(--text-main); background: transparent;">
+                                    <span class="me-auto">{{ search.prompt }}</span>
+                                    <span class="badge bg-light text-dark ms-2">{{ search.timestamp }}</span>
+                                </button>
+                            </h2>
+                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                                aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#historyAccordion">
+                                <div class="accordion-body text-muted border-top border-light">
+                                    {{ search.answer|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="ri-file-search-line fs-1 text-muted mb-3"></i>
+                        <p class="text-muted">No history found. Start exploring!</p>
+                        <a href="{% url 'media_handling_app:search' %}" class="btn btn-premium mt-2">Start Learning</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

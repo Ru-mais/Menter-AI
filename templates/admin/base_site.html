@@ -1,0 +1,267 @@
+{% extends "admin/base.html" %}
+
+{% block title %}VirtueMentor Ai Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">VirtueMentor Ai Admin</a></h1>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    :root {
+        --primary-bg: #0f172a;
+        --secondary-bg: #1e293b;
+        --text-main: #f3f4f6;
+        --text-muted: #9ca3af;
+        --accent-color: #d4af37;
+        --border-color: #374151;
+        --success-color: #10B981;
+        --danger-color: #EF4444;
+    }
+
+    body {
+        background-color: var(--primary-bg) !important;
+        color: var(--text-main) !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
+
+    /* Header */
+    #header {
+        background: var(--secondary-bg) !important;
+        color: var(--text-main) !important;
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 40px !important;
+    }
+
+    #branding h1 {
+        color: var(--accent-color) !important;
+        font-weight: 600 !important;
+        font-size: 1.5rem !important;
+    }
+
+    #branding h1 a:link,
+    #branding h1 a:visited {
+        color: var(--accent-color) !important;
+    }
+
+    /* User Tools */
+    #user-tools {
+        color: var(--text-muted) !important;
+    }
+
+    #user-tools a {
+        border-bottom: 1px solid var(--accent-color) !important;
+    }
+
+    #user-tools a:hover {
+        color: var(--accent-color) !important;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumbs {
+        background: var(--secondary-bg) !important;
+        color: var(--text-muted) !important;
+        border: none !important;
+        padding: 15px 40px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .breadcrumbs a {
+        color: var(--text-main) !important;
+    }
+
+    .breadcrumbs a:hover {
+        color: var(--accent-color) !important;
+    }
+
+    /* Modules/Content */
+    .module h2,
+    .module caption,
+    .inline-group h2 {
+        background: var(--secondary-bg) !important;
+        color: var(--accent-color) !important;
+        padding: 10px 15px !important;
+        font-size: 1.1rem !important;
+        letter-spacing: 0.5px;
+    }
+
+    .module {
+        background: var(--secondary-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px !important;
+        margin-bottom: 30px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    div.breadcrumbs {
+        background: transparent !important;
+    }
+
+    /* Links */
+    a:link,
+    a:visited {
+        color: var(--accent-color) !important;
+    }
+
+    a:hover {
+        color: #fff !important;
+    }
+
+    /* Tables */
+    table {
+        background: var(--secondary-bg) !important;
+        width: 100%;
+        border-spacing: 0;
+    }
+
+    thead th {
+        background: #111827 !important;
+        color: var(--text-main) !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        padding: 12px !important;
+        text-transform: uppercase;
+        font-size: 0.8rem !important;
+        letter-spacing: 1px;
+    }
+
+    thead th a {
+        color: var(--text-main) !important;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid var(--border-color) !important;
+    }
+
+    tbody tr:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+
+    tbody tr:hover {
+        background: rgba(16, 185, 129, 0.1) !important;
+    }
+
+    td {
+        color: var(--text-muted) !important;
+        padding: 12px !important;
+        border-bottom: 1px solid var(--border-color) !important;
+    }
+
+    td a {
+        color: var(--text-main) !important;
+        font-weight: 500;
+    }
+
+    /* Buttons */
+    .button,
+    input[type=submit],
+    input[type=button],
+    .submit-row input,
+    a.button {
+        background: var(--accent-color) !important;
+        color: #000 !important;
+        border: none !important;
+        border-radius: 4px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease !important;
+    }
+
+    .button:hover,
+    input[type=submit]:hover,
+    input[type=button]:hover,
+    .submit-row input:hover,
+    a.button:hover {
+        background: #b5952f !important;
+        transform: translateY(-1px);
+        color: #000 !important;
+    }
+
+    .button.default,
+    input[type=submit].default,
+    .submit-row input.default {
+        background: var(--accent-color) !important;
+    }
+
+    /* Login Form specific */
+    .login .form-row {
+        border-bottom: none !important;
+    }
+
+    /* Form Rows */
+    .form-row {
+        border-bottom: 1px solid var(--border-color) !important;
+        padding: 15px 0 !important;
+    }
+
+    label {
+        color: var(--text-main) !important;
+        font-weight: 500 !important;
+    }
+
+    .help,
+    p.help {
+        color: var(--text-muted) !important;
+    }
+
+    /* Inputs */
+    input[type=text],
+    input[type=password],
+    input[type=email],
+    input[type=url],
+    input[type=number],
+    textarea,
+    select,
+    .vTextField {
+        background: #0f172a !important;
+        color: var(--text-main) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 4px !important;
+        padding: 8px 12px !important;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: var(--accent-color) !important;
+        outline: none !important;
+    }
+
+    /* Dashboard */
+    .dashboard .module table th {
+        width: 100%;
+    }
+
+    /* Filter Sidebar */
+    #changelist-filter {
+        background: var(--secondary-bg) !important;
+        border-left: 1px solid var(--border-color) !important;
+    }
+
+    #changelist-filter h2 {
+        background: var(--accent-color) !important;
+        color: #000 !important;
+    }
+
+    #changelist-filter li.selected {
+        border-left-color: var(--accent-color) !important;
+    }
+
+    #changelist-filter a {
+        color: var(--text-muted) !important;
+    }
+
+    #changelist-filter a:hover {
+        color: var(--accent-color) !important;
+    }
+
+    /* Success Messages */
+    .messagelist li.success {
+        background: rgba(16, 185, 129, 0.2) !important;
+        color: #fff !important;
+        border: 1px solid var(--success-color) !important;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

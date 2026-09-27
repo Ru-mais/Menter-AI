@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Settings | AI-Powered Learning{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <h1>Feedback</h1>
+    <p>We value your feedback! Rate your experience and let us know what you think.</p>
+
+    <div class="contact-form">
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="alert alert-error">
+                <strong>Please correct the following errors:</strong>
+                {{ form.non_field_errors }}
+                <ul>
+                    {% for field in form %}
+                    {% if field.errors %}
+                    <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {{ form.name }}
+            {{ form.email }}
+
+            <label class="rating-label">Rate your experience:</label>
+            <div class="rating">
+                {% for radio in form.rating %}
+                {{ radio.tag }}
+                <label for="{{ radio.id_for_label }}">☆</label>
+                {% endfor %}
+            </div>
+
+            {{ form.review }}
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .contact-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 40px;
+        text-align: center;
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: var(--brand-color);
+        font-weight: 600;
+    }
+
+    p {
+        font-size: 16px;
+        color: var(--text-muted);
+        margin-bottom: 30px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        background-color: var(--primary-bg);
+        color: var(--text-main);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s, background-color var(--transition-speed), color var(--transition-speed);
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        border-color: var(--accent-color);
+        outline: none;
+    }
+
+    .rating-label {
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+
+    .rating input {
+        display: none;
+    }
+
+    .rating label {
+        font-size: 30px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .rating input:checked~label,
+    .rating label:hover,
+    .rating label:hover~label {
+        color: var(--accent-color);
+    }
+
+    .contact-form button {
+        width: 100%;
+        padding: 14px;
+        background: var(--brand-color);
+        color: white;
+        /* Keep white for contrast on brand color */
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s;
+        letter-spacing: 0.5px;
+    }
+
+    [data-theme="dark"] .contact-form button {
+        color: #111827;
+        /* Dark text on light brand color in dark mode if brand is light */
+        /* Note: In dark mode, brand-color is f3f4f6 (light). So text should be dark. Correct. */
+    }
+
+    .contact-form button:hover {
+        background: var(--accent-color);
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .contact-form button:hover {
+        color: #111827;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    /* We can keep standard bootstrap alerts or override with theme vars if desired. 
+       For now, let's make them theme compliant. */
+    .alert-success {
+        background-color: var(--secondary-bg);
+        color: var(--brand-color);
+        border: 1px solid var(--accent-color);
+    }
+
+    .alert-error {
+        background-color: rgba(220, 38, 38, 0.1);
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+</style>
+{% endblock %}
