@@ -123,10 +123,13 @@ WSGI_APPLICATION = 'vmentorai.wsgi.application'
 #     }
 # }
 
+# Check if running on Vercel
+IS_VERCEL = os.environ.get('VERCEL') == '1'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': '/tmp/db.sqlite3' if IS_VERCEL else BASE_DIR / 'db.sqlite3',
     }
 }
 

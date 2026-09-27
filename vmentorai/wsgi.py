@@ -21,4 +21,12 @@ except ImportError:
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vmentorai.settings')
 
+# Run migrations automatically if on Vercel
+if os.environ.get('VERCEL') == '1':
+    try:
+        from django.core.management import execute_from_command_line
+        execute_from_command_line(['manage.py', 'migrate'])
+    except Exception as e:
+        print(f"Failed to run migrations on Vercel startup: {e}")
+
 application = get_wsgi_application()
